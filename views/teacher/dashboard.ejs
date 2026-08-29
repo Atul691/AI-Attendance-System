@@ -1,0 +1,5905 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JARVIS | Teacher Command Center</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =========================================================
+           JARVIS / IRON MAN TEACHER COMMAND CENTER
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #ff1e2d;
+            --red-dark: #90000c;
+            --red-light: #ff5965;
+            --gold: #ffcc45;
+            --cyan: #00eaff;
+            --green: #00ff9d;
+
+            --dark: #020204;
+            --panel: #09090e;
+
+            --text: #ffffff;
+            --muted: #777780;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: "Poppins", sans-serif;
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 50% 15%,
+                    rgba(255, 30, 45, 0.12),
+                    transparent 25%
+                ),
+
+                radial-gradient(
+                    circle at 10% 80%,
+                    rgba(255, 100, 0, 0.07),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(255, 0, 30, 0.08),
+                    transparent 25%
+                ),
+
+                #020204;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           HUD GRID
+        ========================================================= */
+
+        body::before {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    rgba(255, 30, 45, 0.025) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(255, 30, 45, 0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 42px 42px;
+
+            z-index: 0;
+        }
+
+
+        body::after {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    transparent 0%,
+                    rgba(255, 0, 0, 0.025) 50%,
+                    transparent 100%
+                );
+
+            animation: hudScan 6s linear infinite;
+
+            z-index: 1;
+        }
+
+
+        @keyframes hudScan {
+
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100%);
+            }
+
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+
+            height: 76px;
+
+            padding: 0 35px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(20, 5, 8, 0.97),
+                    rgba(7, 5, 8, 0.94)
+                );
+
+            border-bottom:
+                1px solid rgba(255, 30, 45, 0.35);
+
+            box-shadow:
+                0 0 30px rgba(255, 0, 30, 0.10);
+
+            backdrop-filter: blur(20px);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        .brand {
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .brand-icon {
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border: 2px solid var(--red);
+            border-radius: 50%;
+
+            color: #fff;
+
+            font-size: 20px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #fff 0%,
+                    #ffcc45 10%,
+                    #ff2b35 28%,
+                    #69000a 48%,
+                    #080306 70%
+                );
+
+            box-shadow:
+                0 0 8px #ff1e2d,
+                0 0 20px rgba(255, 30, 45, 0.8),
+                0 0 45px rgba(255, 30, 45, 0.35);
+
+            animation:
+                reactorPulse 1.8s ease-in-out infinite;
+        }
+
+
+        @keyframes reactorPulse {
+
+            0%,
+            100% {
+
+                box-shadow:
+                    0 0 8px #ff1e2d,
+                    0 0 20px rgba(255, 30, 45, 0.7),
+                    0 0 40px rgba(255, 30, 45, 0.25);
+            }
+
+
+            50% {
+
+                box-shadow:
+                    0 0 15px #ffcc45,
+                    0 0 35px rgba(255, 30, 45, 1),
+                    0 0 65px rgba(255, 30, 45, 0.5);
+            }
+
+        }
+
+
+        .brand h2 {
+
+            font-family: "Orbitron", sans-serif;
+
+            font-size: 17px;
+
+            letter-spacing: 2px;
+        }
+
+
+        .brand small {
+
+            display: block;
+
+            color: #ff6b73;
+
+            font-size: 8px;
+
+            letter-spacing: 3px;
+
+            margin-top: 2px;
+        }
+
+
+        .teacher-info {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .teacher-badge {
+
+            padding: 9px 15px;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.4);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 30, 45, 0.08);
+
+            color: #ffcc45;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size: 11px;
+        }
+
+
+        .logout {
+
+            text-decoration: none;
+
+            color: #ff555f;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.45);
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+
+            transition: 0.25s;
+        }
+
+
+        .logout:hover {
+
+            color: white;
+
+            background:
+                rgba(255, 30, 45, 0.20);
+
+            box-shadow:
+                0 0 20px rgba(255, 30, 45, 0.35);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .main {
+
+            width: min(1400px, 94%);
+
+            margin: auto;
+
+            padding:
+                40px 0 80px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        /* =========================================================
+           WELCOME
+        ========================================================= */
+
+        .welcome {
+
+            margin-bottom: 28px;
+
+            padding-left: 5px;
+        }
+
+
+        .welcome h1 {
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size: 30px;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .welcome h1 span {
+
+            color: #ff2635;
+
+            text-shadow:
+                0 0 8px rgba(255, 30, 45, 0.8),
+                0 0 25px rgba(255, 30, 45, 0.35);
+        }
+
+
+        .welcome p {
+
+            color: #777;
+
+            font-size: 12px;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =========================================================
+           JARVIS PANEL
+        ========================================================= */
+
+        .jarvis-panel {
+
+            width: 100%;
+
+            min-height: 150px;
+
+            margin-bottom: 28px;
+
+            padding: 24px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(8, 15, 28, 0.98),
+                    rgba(14, 8, 12, 0.98)
+                );
+
+            border:
+                1px solid rgba(255, 30, 45, 0.35);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 0 30px rgba(255, 30, 45, 0.12);
+        }
+
+
+        .jarvis-panel::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #ff1e2d,
+                    #ffcc45,
+                    #ff1e2d,
+                    transparent
+                );
+        }
+
+
+        .jarvis-orb {
+
+            width: 88px;
+            height: 88px;
+
+            min-width: 88px;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #ff3342 0%,
+                    #8d000c 38%,
+                    #180205 72%
+                );
+
+            border:
+                2px solid rgba(255, 30, 45, 0.8);
+
+            box-shadow:
+                0 0 15px rgba(255, 30, 45, 0.8),
+                0 0 40px rgba(255, 30, 45, 0.45);
+        }
+
+
+        .jarvis-orb::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 110px;
+            height: 110px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.35);
+        }
+
+
+        .jarvis-orb::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 130px;
+            height: 130px;
+
+            border-radius: 50%;
+
+            border:
+                1px dashed rgba(255, 204, 69, 0.25);
+        }
+
+
+        .jarvis-core {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff5965,
+                    #b00012
+                );
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            box-shadow:
+                0 0 20px rgba(255, 30, 45, 0.8);
+
+            z-index: 2;
+        }
+
+
+        .jarvis-listening {
+
+            animation:
+                jarvisPulse 1s infinite;
+        }
+
+
+        @keyframes jarvisPulse {
+
+            0%,
+            100% {
+
+                transform:
+                    scale(1);
+            }
+
+
+            50% {
+
+                transform:
+                    scale(1.08);
+
+                box-shadow:
+                    0 0 30px rgba(255, 30, 45, 1),
+                    0 0 80px rgba(255, 30, 45, 0.7);
+            }
+
+        }
+
+
+        .jarvis-information {
+
+            flex: 1;
+        }
+
+
+        .jarvis-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap: 15px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .jarvis-title {
+
+            color: #ffcc45;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        .jarvis-status {
+
+            padding:
+                6px 10px;
+
+            color:
+                #ff5965;
+
+            font-size:
+                9px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                1px;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.35);
+
+            border-radius:
+                20px;
+
+            background:
+                rgba(255, 30, 45, 0.06);
+        }
+
+
+        .jarvis-text {
+
+            color:
+                #b9b9b9;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.6;
+
+            margin-bottom:
+                16px;
+        }
+
+
+        .jarvis-commands {
+
+            display:
+                flex;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                8px;
+        }
+
+
+        .jarvis-commands span {
+
+            padding:
+                6px 10px;
+
+            color:
+                #888;
+
+            font-size:
+                8px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                0.8px;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius:
+                5px;
+        }
+
+
+        .jarvis-button {
+
+            width: 64px;
+            height: 64px;
+
+            min-width: 64px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff1e2d,
+                    #87000b
+                );
+
+            box-shadow:
+                0 0 20px rgba(255, 30, 45, 0.35);
+
+            transition:
+                0.25s;
+        }
+
+
+        .jarvis-button:hover {
+
+            transform:
+                scale(1.08);
+
+            box-shadow:
+                0 0 35px rgba(255, 30, 45, 0.7);
+        }
+
+
+        .jarvis-active {
+
+            animation:
+                microphonePulse 0.8s infinite;
+        }
+
+
+        @keyframes microphonePulse {
+
+            50% {
+
+                transform:
+                    scale(1.12);
+            }
+
+        }
+
+
+        /* =========================================================
+           PANELS
+        ========================================================= */
+
+        .panel {
+
+            position:
+                relative;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 9, 12, 0.94),
+                    rgba(7, 7, 10, 0.95)
+                );
+
+            border:
+                1px solid rgba(255, 30, 45, 0.20);
+
+            border-radius:
+                16px;
+
+            padding:
+                24px;
+
+            margin-bottom:
+                22px;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 0 25px rgba(255, 30, 45, 0.025);
+
+            overflow:
+                hidden;
+        }
+
+
+        .panel::before {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            top:
+                0;
+
+            left:
+                0;
+
+            width:
+                100%;
+
+            height:
+                2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #ff1e2d,
+                    #ffcc45,
+                    #ff1e2d,
+                    transparent
+                );
+        }
+
+
+        .panel-title {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                15px;
+
+            margin-bottom:
+                20px;
+        }
+
+
+        .panel-title h2 {
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                14px;
+
+            letter-spacing:
+                1px;
+        }
+
+
+        .panel-title small {
+
+            color:
+                #777;
+
+            font-size:
+                10px;
+        }
+
+
+        /* =========================================================
+           TOP GRID
+        ========================================================= */
+
+        .top-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1.35fr 0.65fr;
+
+            gap:
+                22px;
+        }
+
+
+        /* =========================================================
+           SESSION
+        ========================================================= */
+
+        .session-box {
+
+            padding:
+                22px;
+
+            border-radius:
+                14px;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.25);
+
+            background:
+                rgba(255, 30, 45, 0.025);
+        }
+
+
+        .session-status {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+
+            color:
+                #ffcc45;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                10px;
+
+            letter-spacing:
+                1px;
+
+            margin-bottom:
+                13px;
+        }
+
+
+        .session-status.off {
+
+            color:
+                #888;
+        }
+
+
+        .dot {
+
+            width:
+                9px;
+
+            height:
+                9px;
+
+            border-radius:
+                50%;
+
+            background:
+                #ff1e2d;
+
+            box-shadow:
+                0 0 10px #ff1e2d;
+
+            animation:
+                dotPulse 1.2s infinite;
+        }
+
+
+        .dot.off {
+
+            background:
+                #666;
+
+            animation:
+                none;
+
+            box-shadow:
+                none;
+        }
+
+
+        @keyframes dotPulse {
+
+            50% {
+
+                opacity:
+                    0.4;
+
+                transform:
+                    scale(0.7);
+            }
+
+        }
+
+
+        .session-name {
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                20px;
+
+            color:
+                white;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .session-id {
+
+            color:
+                #777;
+
+            font-size:
+                10px;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .create-form {
+
+            display:
+                flex;
+
+            gap:
+                10px;
+        }
+
+
+        .create-form input {
+
+            flex:
+                1;
+
+            padding:
+                13px 15px;
+
+            border-radius:
+                9px;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.22);
+
+            background:
+                #050508;
+
+            color:
+                white;
+
+            outline:
+                none;
+        }
+
+
+        .create-form input:focus {
+
+            border-color:
+                #ff1e2d;
+
+            box-shadow:
+                0 0 15px rgba(255, 30, 45, 0.16);
+        }
+
+
+        .create-btn,
+        .approve-btn {
+
+            border:
+                none;
+
+            padding:
+                12px 18px;
+
+            border-radius:
+                8px;
+
+            cursor:
+                pointer;
+
+            color:
+                white;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                9px;
+
+            letter-spacing:
+                1px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff1e2d,
+                    #a90010
+                );
+        }
+
+
+        .end-btn {
+
+            border:
+                1px solid rgba(255, 30, 45, 0.45);
+
+            background:
+                rgba(255, 30, 45, 0.08);
+
+            color:
+                #ff5862;
+
+            padding:
+                10px 18px;
+
+            border-radius:
+                8px;
+
+            cursor:
+                pointer;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                9px;
+        }
+
+
+        /* =========================================================
+           STATS
+        ========================================================= */
+
+        .stats {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap:
+                12px;
+        }
+
+
+        .stat {
+
+            padding:
+                18px;
+
+            border-radius:
+                12px;
+
+            background:
+                rgba(255, 30, 45, 0.04);
+
+            border:
+                1px solid rgba(255, 30, 45, 0.14);
+        }
+
+
+        .stat-icon {
+
+            font-size:
+                19px;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        .stat-number {
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                24px;
+
+            font-weight:
+                700;
+
+            color:
+                #ff3342;
+        }
+
+
+        .stat-label {
+
+            color:
+                #777;
+
+            font-size:
+                8px;
+
+            margin-top:
+                4px;
+
+            letter-spacing:
+                1px;
+        }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        .search-box {
+
+            width:
+                100%;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        .search-box input {
+
+            width:
+                100%;
+
+            padding:
+                13px 16px;
+
+            background:
+                #050508;
+
+            border:
+                1px solid rgba(255, 30, 45, 0.20);
+
+            border-radius:
+                9px;
+
+            color:
+                white;
+
+            outline:
+                none;
+
+            font-family:
+                "Poppins", sans-serif;
+        }
+
+
+        .search-box input:focus {
+
+            border-color:
+                #ff1e2d;
+
+            box-shadow:
+                0 0 18px rgba(255, 30, 45, 0.12);
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .table-wrapper {
+
+            overflow-x:
+                auto;
+
+            border-radius:
+                10px;
+        }
+
+
+        table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+        }
+
+
+        th {
+
+            text-align:
+                left;
+
+            color:
+                #9b5258;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                8px;
+
+            letter-spacing:
+                1px;
+
+            padding:
+                13px;
+
+            border-bottom:
+                1px solid rgba(255, 30, 45, 0.18);
+
+            white-space:
+                nowrap;
+        }
+
+
+        td {
+
+            padding:
+                13px;
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.035);
+
+            font-size:
+                11px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        tr:hover td {
+
+            background:
+                rgba(255, 30, 45, 0.035);
+        }
+
+
+        /* =========================================================
+           PHOTOS
+        ========================================================= */
+
+        .student-photo {
+
+            width:
+                46px;
+
+            height:
+                46px;
+
+            border-radius:
+                50%;
+
+            object-fit:
+                cover;
+
+            border:
+                2px solid rgba(255, 30, 45, 0.55);
+        }
+
+
+        .attendance-photo {
+
+            width:
+                42px;
+
+            height:
+                42px;
+
+            border-radius:
+                50%;
+
+            object-fit:
+                cover;
+
+            border:
+                2px solid rgba(255, 30, 45, 0.5);
+        }
+
+
+        .student-name {
+
+            color:
+                white;
+
+            font-weight:
+                600;
+        }
+
+
+        .student-email {
+
+            color:
+                #777;
+
+            font-size:
+                9px;
+        }
+
+
+        /* =========================================================
+           BADGES
+        ========================================================= */
+
+        .approved {
+
+            display:
+                inline-block;
+
+            color:
+                #ffcc45;
+
+            background:
+                rgba(255, 204, 69, 0.06);
+
+            border:
+                1px solid rgba(255, 204, 69, 0.25);
+
+            padding:
+                5px 9px;
+
+            border-radius:
+                6px;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                8px;
+        }
+
+
+        .pending {
+
+            display:
+                inline-block;
+
+            color:
+                #ff6b73;
+
+            background:
+                rgba(255, 30, 45, 0.07);
+
+            border:
+                1px solid rgba(255, 30, 45, 0.25);
+
+            padding:
+                5px 9px;
+
+            border-radius:
+                6px;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                8px;
+        }
+
+
+        /* =========================================================
+           EMPTY
+        ========================================================= */
+
+        .empty {
+
+            text-align:
+                center;
+
+            color:
+                #666;
+
+            padding:
+                45px 20px;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                10px;
+
+            letter-spacing:
+                1px;
+
+            border:
+                1px dashed rgba(255, 30, 45, 0.15);
+
+            border-radius:
+                10px;
+        }
+
+
+        /* =========================================================
+           LIVE
+        ========================================================= */
+
+        .live {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            color:
+                #ff3342;
+
+            font-family:
+                "Orbitron", sans-serif;
+
+            font-size:
+                8px;
+        }
+
+
+        .live-dot {
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                #ff1e2d;
+
+            box-shadow:
+                0 0 8px #ff1e2d;
+
+            animation:
+                pulse 1s infinite;
+        }
+
+
+        @keyframes pulse {
+
+            50% {
+
+                opacity:
+                    0.3;
+            }
+
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .top-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .navbar {
+
+                padding:
+                    0 15px;
+
+                height:
+                    68px;
+            }
+
+
+            .brand-icon {
+
+                width:
+                    40px;
+
+                height:
+                    40px;
+            }
+
+
+            .brand h2 {
+
+                font-size:
+                    13px;
+            }
+
+
+            .teacher-badge {
+
+                display:
+                    none;
+            }
+
+
+            .main {
+
+                width:
+                    94%;
+
+                padding-top:
+                    25px;
+            }
+
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .create-form {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .panel {
+
+                padding:
+                    18px;
+            }
+
+
+            .welcome h1 {
+
+                font-size:
+                    22px;
+            }
+
+
+            .jarvis-panel {
+
+                padding:
+                    18px;
+
+                gap:
+                    15px;
+
+                flex-wrap:
+                    wrap;
+            }
+
+
+            .jarvis-orb {
+
+                width:
+                    65px;
+
+                height:
+                    65px;
+
+                min-width:
+                    65px;
+            }
+
+
+            .jarvis-orb::before {
+
+                width:
+                    78px;
+
+                height:
+                    78px;
+            }
+
+
+            .jarvis-orb::after {
+
+                display:
+                    none;
+            }
+
+
+            .jarvis-button {
+
+                width:
+                    55px;
+
+                height:
+                    55px;
+
+                min-width:
+                    55px;
+            }
+
+
+            .jarvis-header {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ===================================================== -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ◉
+            </div>
+
+            <div>
+
+                <h2>JARVIS COMMAND</h2>
+
+                <small>
+                    AI ATTENDANCE SYSTEM
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="teacher-info">
+
+            <div class="teacher-badge">
+                👨‍🏫 <%= teacher.username %>
+            </div>
+
+
+            <a
+                href="/teacher/logout"
+                class="logout"
+            >
+                LOGOUT
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <main class="main">
+
+
+        <!-- =====================================================
+             WELCOME
+        ===================================================== -->
+
+        <div class="welcome">
+
+            <h1>
+
+                Welcome back,
+
+                <span>
+                    <%= teacher.username %>
+                </span>
+
+            </h1>
+
+
+            <p>
+                JARVIS Teacher Command Center • AI Attendance System
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             JARVIS VOICE ASSISTANT
+        ===================================================== -->
+
+        <section class="jarvis-panel">
+
+
+            <div
+                class="jarvis-orb"
+                id="jarvisOrb"
+            >
+
+                <div class="jarvis-core">
+                    J
+                </div>
+
+            </div>
+
+
+
+            <div class="jarvis-information">
+
+
+                <div class="jarvis-header">
+
+                    <div class="jarvis-title">
+                        🤖 JARVIS VOICE ASSISTANT
+                    </div>
+
+
+                    <div
+                        class="jarvis-status"
+                        id="jarvisStatus"
+                    >
+                        SYSTEM READY
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="jarvis-text"
+                    id="jarvisText"
+                >
+
+                    Good day, <%= teacher.username %>.
+
+                    JARVIS is online and ready for your command.
+
+                </div>
+
+
+
+                <div class="jarvis-commands">
+
+                    <span>CREATE SESSION</span>
+
+                    <span>END SESSION</span>
+
+                    <span>ATTENDANCE</span>
+
+                    <span>APPROVE STUDENTS</span>
+
+                    <span>SHOW STUDENTS</span>
+
+                    <span>REFRESH</span>
+
+                    <span>HELP</span>
+
+                </div>
+
+            </div>
+
+
+
+            <button
+                type="button"
+                class="jarvis-button"
+                id="jarvisButton"
+                title="Activate JARVIS"
+            >
+                🎤
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             SESSION + STATS
+        ===================================================== -->
+
+        <div class="top-grid">
+
+
+            <!-- SESSION -->
+
+            <section class="panel">
+
+
+                <div class="panel-title">
+
+                    <h2>
+                        ⚡ ATTENDANCE SESSION
+                    </h2>
+
+
+                    <% if (activeSession) { %>
+
+                        <div class="live">
+
+                            <span class="live-dot"></span>
+
+                            LIVE
+
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+
+
+                <% if (activeSession) { %>
+
+
+                    <div class="session-box">
+
+
+                        <div class="session-status">
+
+                            <span class="dot"></span>
+
+                            SESSION ACTIVE
+
+                        </div>
+
+
+
+                        <div class="session-name">
+                            <%= activeSession.session_name %>
+                        </div>
+
+
+
+                        <div class="session-id">
+
+                            SESSION ID:
+
+                            <%= activeSession.id %>
+
+                        </div>
+
+
+
+                        <form
+                            action="/teacher/session/<%= activeSession.id %>/end"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="end-btn"
+                                id="endSessionButton"
+                                onclick="return confirm('End this attendance session?')"
+                            >
+
+                                🔴 END SESSION
+
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+
+                <% } else { %>
+
+
+                    <div class="session-box">
+
+
+                        <div class="session-status off">
+
+                            <span class="dot off"></span>
+
+                            NO ACTIVE SESSION
+
+                        </div>
+
+
+
+                        <p
+                            style="
+                                color: #777;
+                                font-size: 11px;
+                                margin-bottom: 18px;
+                            "
+                        >
+
+                            Create a session before students can mark attendance.
+
+                        </p>
+
+
+
+                        <form
+                            action="/teacher/session/create"
+                            method="POST"
+                            class="create-form"
+                        >
+
+                            <input
+                                type="text"
+                                name="session_name"
+                                id="sessionNameInput"
+                                placeholder="Example: BCA 5th Sem - AI"
+                                maxlength="150"
+                                required
+                            >
+
+
+                            <button
+                                type="submit"
+                                class="create-btn"
+                            >
+
+                                + CREATE
+
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+
+                <% } %>
+
+
+            </section>
+
+
+
+            <!-- SYSTEM STATUS -->
+
+            <section class="panel">
+
+
+                <div class="panel-title">
+
+                    <h2>
+                        📊 SYSTEM STATUS
+                    </h2>
+
+                </div>
+
+
+
+                <div class="stats">
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon">
+                            👨‍🎓
+                        </div>
+
+
+                        <div class="stat-number">
+                            <%= students.length %>
+                        </div>
+
+
+                        <div class="stat-label">
+                            REGISTERED STUDENTS
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon">
+                            ⏳
+                        </div>
+
+
+                        <div class="stat-number">
+                            <%= pendingStudents.length %>
+                        </div>
+
+
+                        <div class="stat-label">
+                            PENDING APPROVAL
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon">
+                            ✓
+                        </div>
+
+
+                        <div class="stat-number">
+                            <%= attendance.length %>
+                        </div>
+
+
+                        <div class="stat-label">
+                            SESSION ATTENDANCE
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+             ATTENDANCE RECORDS
+        ===================================================== -->
+
+        <section
+            class="panel"
+            id="attendanceSection"
+        >
+
+
+            <div class="panel-title">
+
+                <h2>
+                    🟢 ATTENDANCE RECORDS
+                </h2>
+
+
+                <% if (displaySession) { %>
+
+                    <small>
+
+                        <%= displaySession.session_name %>
+
+                        <% if (!displaySession.is_active) { %>
+
+                            • SESSION OFF
+
+                        <% } %>
+
+                    </small>
+
+                <% } %>
+
+            </div>
+
+
+
+            <% if (!displaySession) { %>
+
+
+                <div class="empty">
+
+                    ⚡ CREATE AN ATTENDANCE SESSION FIRST.
+
+                </div>
+
+
+
+            <% } else if (attendance.length === 0) { %>
+
+
+                <div class="empty">
+
+
+                    <% if (displaySession.is_active) { %>
+
+                        NO ATTENDANCE MARKED YET.
+
+                        <br>
+
+                        WAITING FOR STUDENT SCANNER...
+
+
+                    <% } else { %>
+
+                        NO ATTENDANCE WAS MARKED IN THIS SESSION.
+
+                    <% } %>
+
+
+                </div>
+
+
+
+            <% } else { %>
+
+
+                <div class="table-wrapper">
+
+
+                    <table id="attendanceTable">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>PHOTO</th>
+
+                                <th>STUDENT</th>
+
+                                <th>ROLL NO</th>
+
+                                <th>EMAIL</th>
+
+                                <th>DATE</th>
+
+                                <th>TIME</th>
+
+                                <th>MARKED BY</th>
+
+                                <th>STATUS</th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            <% attendance.forEach(record => { %>
+
+
+                                <tr>
+
+
+                                    <td>
+
+                                        <% if (record.image_url) { %>
+
+                                            <img
+                                                src="<%= record.image_url %>"
+                                                class="attendance-photo"
+                                                alt="Student"
+                                            >
+
+                                        <% } else { %>
+
+                                            👤
+
+                                        <% } %>
+
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <div class="student-name">
+
+                                            <%= record.full_name %>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= record.roll_no %>
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <div class="student-email">
+
+                                            <%= record.email %>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= record.attendance_date %>
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= record.attendance_time %>
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= record.marked_by %>
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <span class="approved">
+                                            ✓ PRESENT
+                                        </span>
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            <% }) %>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            <% } %>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             PENDING STUDENTS
+        ===================================================== -->
+
+        <section
+            class="panel"
+            id="pendingSection"
+        >
+
+
+            <div class="panel-title">
+
+
+                <h2>
+                    ⏳ PENDING STUDENT APPROVALS
+                </h2>
+
+
+                <small>
+                    <%= pendingStudents.length %> WAITING
+                </small>
+
+
+            </div>
+
+
+
+            <% if (pendingStudents.length === 0) { %>
+
+
+                <div class="empty">
+
+                    ✅ NO STUDENTS WAITING FOR APPROVAL.
+
+                </div>
+
+
+
+            <% } else { %>
+
+
+                <div class="table-wrapper">
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>PHOTO</th>
+
+                                <th>STUDENT</th>
+
+                                <th>ROLL NO</th>
+
+                                <th>EMAIL</th>
+
+                                <th>STATUS</th>
+
+                                <th>ACTION</th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            <% pendingStudents.forEach(student => { %>
+
+
+                                <tr>
+
+
+                                    <td>
+
+                                        <% if (student.image_url) { %>
+
+                                            <img
+                                                src="<%= student.image_url %>"
+                                                class="student-photo"
+                                                alt="Student"
+                                            >
+
+                                        <% } else { %>
+
+                                            👤
+
+                                        <% } %>
+
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <div class="student-name">
+
+                                            <%= student.full_name %>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= student.roll_no %>
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= student.email %>
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <span class="pending">
+                                            PENDING
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <td>
+
+
+                                        <form
+                                            action="/teacher/student/<%= student.id %>/approve"
+                                            method="POST"
+                                        >
+
+
+                                            <button
+                                                type="submit"
+                                                class="approve-btn"
+                                            >
+
+                                                ✓ APPROVE
+
+                                            </button>
+
+
+                                        </form>
+
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            <% }) %>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            <% } %>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             REGISTERED STUDENTS
+        ===================================================== -->
+
+        <section
+            class="panel"
+            id="studentsSection"
+        >
+
+
+            <div class="panel-title">
+
+
+                <h2>
+                    👥 REGISTERED STUDENTS
+                </h2>
+
+
+                <small>
+                    <%= students.length %> STUDENTS
+                </small>
+
+
+            </div>
+
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="studentSearch"
+                    placeholder="🔍 Search student by name, roll number or email..."
+                >
+
+            </div>
+
+
+
+            <% if (students.length === 0) { %>
+
+
+                <div class="empty">
+
+                    NO STUDENTS REGISTERED YET.
+
+                </div>
+
+
+
+            <% } else { %>
+
+
+                <div class="table-wrapper">
+
+
+                    <table id="studentsTable">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>PHOTO</th>
+
+                                <th>STUDENT</th>
+
+                                <th>ROLL NO</th>
+
+                                <th>EMAIL</th>
+
+                                <th>ACCOUNT</th>
+
+                                <th>REGISTERED</th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            <% students.forEach(student => { %>
+
+
+                                <tr class="student-row">
+
+
+                                    <td>
+
+                                        <% if (student.image_url) { %>
+
+                                            <img
+                                                src="<%= student.image_url %>"
+                                                class="student-photo"
+                                                alt="Student"
+                                            >
+
+                                        <% } else { %>
+
+                                            👤
+
+                                        <% } %>
+
+                                    </td>
+
+
+
+                                    <td>
+
+                                        <div class="student-name">
+
+                                            <%= student.full_name %>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= student.roll_no %>
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= student.email %>
+                                    </td>
+
+
+
+                                    <td>
+
+
+                                        <% if (student.approved) { %>
+
+                                            <span class="approved">
+                                                ✓ APPROVED
+                                            </span>
+
+
+                                        <% } else { %>
+
+                                            <span class="pending">
+                                                PENDING
+                                            </span>
+
+                                        <% } %>
+
+
+                                    </td>
+
+
+
+                                    <td>
+                                        <%= student.created_at %>
+                                    </td>
+
+
+                                </tr>
+
+
+                            <% }) %>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            <% } %>
+
+
+        </section>
+
+
+    </main>
+html
+<script>
+
+/* =========================================================
+   STUDENT SEARCH
+========================================================= */
+
+const studentSearch = document.getElementById("studentSearch");
+
+if (studentSearch) {
+
+    studentSearch.addEventListener("input", function () {
+
+        const searchValue = this.value.toLowerCase().trim();
+
+        const rows = document.querySelectorAll(".student-row");
+
+        rows.forEach(row => {
+
+            const text = row.textContent.toLowerCase();
+
+            row.style.display =
+                text.includes(searchValue)
+                    ? ""
+                    : "none";
+
+        });
+
+    });
+
+}
+/* =========================================================
+   JARVIS ELEMENTS
+========================================================= */
+
+const jarvisButton = document.getElementById("jarvisButton");
+
+const jarvisOrb = document.getElementById("jarvisOrb");
+
+const jarvisStatus = document.getElementById("jarvisStatus");
+
+const jarvisText = document.getElementById("jarvisText");
+
+
+/* =========================================================
+   SPEECH RECOGNITION
+========================================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+/* =========================================================
+   JARVIS SETTINGS
+========================================================= */
+
+let jarvisEnabled = false;
+
+let recognitionRunning = false;
+
+let isSpeaking = false;
+
+let restartTimer = null;
+
+let recognition = null;
+
+
+/* =========================================================
+   UPDATE JARVIS UI
+========================================================= */
+
+function updateJarvis(status, text) {
+
+    if (jarvisStatus) {
+
+        jarvisStatus.textContent = status;
+
+    }
+
+    if (jarvisText) {
+
+        jarvisText.textContent = text;
+
+    }
+
+}
+
+
+/* =========================================================
+   LISTENING UI ON
+========================================================= */
+
+function setJarvisListeningUI() {
+
+    if (jarvisButton) {
+
+        jarvisButton.classList.add("jarvis-active");
+
+    }
+
+    if (jarvisOrb) {
+
+        jarvisOrb.classList.add("jarvis-listening");
+
+    }
+
+}
+
+
+/* =========================================================
+   LISTENING UI OFF
+========================================================= */
+
+function removeJarvisListeningUI() {
+
+    if (jarvisButton) {
+
+        jarvisButton.classList.remove("jarvis-active");
+
+    }
+
+    if (jarvisOrb) {
+
+        jarvisOrb.classList.remove("jarvis-listening");
+
+    }
+
+}
+
+
+/* =========================================================
+   SPEAK FUNCTION
+========================================================= */
+
+/* =========================================================
+   IMPROVED JARVIS SPEAK FUNCTION
+========================================================= */
+
+function speak(text, language = "hi-IN") {
+
+    if (!("speechSynthesis" in window)) {
+
+        console.log("Speech synthesis not supported");
+
+        return;
+
+    }
+
+    window.speechSynthesis.cancel();
+
+    clearTimeout(restartTimer);
+
+    isSpeaking = true;
+
+    updateJarvis(
+        "JARVIS SPEAKING",
+        text
+    );
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.lang = language;
+
+    speech.rate = 0.9;
+
+    speech.pitch = 0.9;
+
+    speech.volume = 1;
+
+    const voices =
+        window.speechSynthesis.getVoices();
+
+    const hindiVoice =
+        voices.find(voice =>
+            voice.lang === "hi-IN"
+        );
+
+    const englishVoice =
+        voices.find(voice =>
+            voice.lang === "en-IN"
+        );
+
+    if (hindiVoice) {
+
+        speech.voice = hindiVoice;
+
+    } else if (englishVoice) {
+
+        speech.voice = englishVoice;
+
+    }
+
+    speech.onstart = function () {
+
+        console.log(
+            "JARVIS STARTED SPEAKING:",
+            text
+        );
+
+    };
+
+    speech.onend = function () {
+
+        console.log(
+            "JARVIS FINISHED SPEAKING"
+        );
+
+        isSpeaking = false;
+
+        if (jarvisEnabled) {
+
+            restartListening(1000);
+
+        }
+
+    };
+
+    speech.onerror = function (event) {
+
+        console.log(
+            "Speech Error:",
+            event
+        );
+
+        isSpeaking = false;
+
+        if (jarvisEnabled) {
+
+            restartListening(1000);
+
+        }
+
+    };
+
+    setTimeout(() => {
+
+        window.speechSynthesis.speak(speech);
+
+    }, 200);
+
+}
+
+
+/* =========================================================
+   LOAD AVAILABLE VOICES
+========================================================= */
+
+window.speechSynthesis.onvoiceschanged =
+    function () {
+
+        console.log(
+            "JARVIS Voices Loaded:",
+            window.speechSynthesis.getVoices()
+        );
+
+    };
+
+
+
+/* =========================================================
+   NORMALIZE COMMAND
+========================================================= */
+
+function normalizeCommand(command) {
+
+    return command
+
+        .toLowerCase()
+
+        .trim()
+
+        .replace(/[?.,!]/g, "")
+
+
+        /* JARVIS */
+
+        .replace(/जार्विस/g, "jarvis")
+
+
+        /* ATTENDANCE */
+
+        .replace(/अटेंडेंस/g, "attendance")
+
+        .replace(/हाजिरी/g, "attendance")
+
+        .replace(/हाजरी/g, "attendance")
+
+
+        /* STUDENT */
+
+        .replace(/स्टूडेंट्स/g, "students")
+
+        .replace(/स्टूडेंट/g, "student")
+
+        .replace(/छात्रों/g, "students")
+
+        .replace(/छात्र/g, "student")
+
+
+        /* SESSION */
+
+        .replace(/सेशन/g, "session")
+
+        .replace(/सत्र/g, "session")
+
+
+        /* ACTIONS */
+
+        .replace(/दिखाओ/g, "show")
+
+        .replace(/दिखा/g, "show")
+
+        .replace(/बताओ/g, "tell")
+
+        .replace(/बता/g, "tell")
+
+        .replace(/खोलो/g, "open")
+
+        .replace(/सर्च/g, "search")
+
+        .replace(/ढूंढो/g, "find")
+
+        .replace(/रिफ्रेश/g, "refresh")
+
+        .replace(/मदद/g, "help")
+
+
+        /* SESSION ACTIONS */
+
+        .replace(/बनाओ/g, "create")
+
+        .replace(/बना दो/g, "create")
+
+        .replace(/बनाना/g, "create")
+
+        .replace(/शुरू/g, "start")
+
+        .replace(/चालू/g, "start")
+
+        .replace(/बंद/g, "end")
+
+        .replace(/खत्म/g, "end")
+
+        .replace(/\s+/g, " ")
+
+        .trim();
+
+}
+
+
+/* =========================================================
+   CHECK ANY COMMAND
+========================================================= */
+
+function hasAny(command, words) {
+
+    return words.some(word =>
+        command.includes(word)
+    );
+
+}
+
+
+/* =========================================================
+   CLEAN STUDENT NAME
+========================================================= */
+
+function cleanStudentName(name) {
+
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+
+}
+
+
+/* =========================================================
+   GET ALL REGISTERED STUDENTS
+========================================================= */
+
+function getAllStudents() {
+
+    const students = [];
+
+
+    const rows =
+        document.querySelectorAll(
+            "#studentsTable tbody tr.student-row"
+        );
+
+
+    rows.forEach(row => {
+
+        const nameElement =
+            row.querySelector(".student-name");
+
+
+        if (!nameElement) {
+
+            return;
+
+        }
+
+
+        const cells =
+            row.querySelectorAll("td");
+
+
+        const name =
+            nameElement.textContent.trim();
+
+
+        students.push({
+
+            name: name,
+
+            rollNo:
+                cells[2]
+                    ? cells[2].textContent.trim()
+                    : "",
+
+            email:
+                cells[3]
+                    ? cells[3].textContent.trim()
+                    : ""
+
+        });
+
+    });
+
+
+    return students;
+
+}
+
+
+/* =========================================================
+   GET PRESENT STUDENTS
+========================================================= */
+
+function getPresentStudents() {
+
+    const students = [];
+
+
+    const rows =
+        document.querySelectorAll(
+            "#attendanceTable tbody tr"
+        );
+
+
+    rows.forEach(row => {
+
+        const nameElement =
+            row.querySelector(".student-name");
+
+
+        if (!nameElement) {
+
+            return;
+
+        }
+
+
+        const cells =
+            row.querySelectorAll("td");
+
+
+        students.push({
+
+            name:
+                nameElement.textContent.trim(),
+
+            rollNo:
+                cells[2]
+                    ? cells[2].textContent.trim()
+                    : "",
+
+            email:
+                cells[3]
+                    ? cells[3].textContent.trim()
+                    : ""
+
+        });
+
+    });
+
+
+    return students;
+
+}
+
+
+/* =========================================================
+   GET ABSENT STUDENTS
+========================================================= */
+
+function getAbsentStudents() {
+
+    const allStudents =
+        getAllStudents();
+
+
+    const presentStudents =
+        getPresentStudents();
+
+
+    const presentNames =
+        presentStudents.map(student =>
+            cleanStudentName(student.name)
+        );
+
+
+    return allStudents.filter(student =>
+
+        !presentNames.includes(
+            cleanStudentName(student.name)
+        )
+
+    );
+
+}
+
+
+/* =========================================================
+   FIND STUDENT
+========================================================= */
+
+function findStudentByName(searchName) {
+
+    const students =
+        getAllStudents();
+
+
+    searchName =
+        cleanStudentName(searchName);
+
+
+    if (!searchName) {
+
+        return null;
+
+    }
+
+
+    /* EXACT MATCH */
+
+    let found =
+        students.find(student =>
+
+            cleanStudentName(student.name) ===
+            searchName
+
+        );
+
+
+    if (found) {
+
+        return found;
+
+    }
+
+
+    /* PARTIAL MATCH */
+
+    found =
+        students.find(student => {
+
+            const name =
+                cleanStudentName(student.name);
+
+
+            return (
+
+                name.includes(searchName)
+
+                ||
+
+                searchName.includes(name)
+
+            );
+
+        });
+
+
+    return found || null;
+
+}
+
+
+/* =========================================================
+   CHECK STUDENT PRESENT
+========================================================= */
+
+function isStudentPresent(studentName) {
+
+    const presentStudents =
+        getPresentStudents();
+
+
+    const normalizedName =
+        cleanStudentName(studentName);
+
+
+    return presentStudents.some(student =>
+
+        cleanStudentName(student.name) ===
+        normalizedName
+
+    );
+
+}
+
+
+/* =========================================================
+   EXTRACT STUDENT NAME
+========================================================= */
+
+function extractStudentName(command) {
+
+    let name = command;
+
+
+    const removeWords = [
+
+        "jarvis",
+
+        "check",
+
+        "tell",
+
+        "show",
+
+        "find",
+
+        "search",
+
+        "attendance",
+
+        "status",
+
+        "present",
+
+        "absent",
+
+        "student",
+
+        "students",
+
+        "is",
+
+        "are",
+
+        "was",
+
+        "today",
+
+        "ki",
+
+        "ka",
+
+        "kya",
+
+        "hai",
+
+        "hain",
+
+        "hai kya",
+
+        "check karo",
+
+        "batao",
+
+        "please"
+
+    ];
+
+
+    removeWords.forEach(word => {
+
+        const regex =
+            new RegExp("\\b" + word + "\\b", "g");
+
+
+        name =
+            name.replace(regex, "");
+
+    });
+
+
+    return name
+
+        .replace(/\s+/g, " ")
+
+        .trim();
+
+}
+
+
+/* =========================================================
+   OPEN ATTENDANCE
+========================================================= */
+
+function openAttendanceSection() {
+
+    const section =
+        document.getElementById(
+            "attendanceSection"
+        );
+
+
+    if (section) {
+
+        section.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN STUDENTS
+========================================================= */
+
+function openStudentsSection() {
+
+    const section =
+        document.getElementById(
+            "studentsSection"
+        );
+
+
+    if (section) {
+
+        section.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN PENDING
+========================================================= */
+
+function openPendingSection() {
+
+    const section =
+        document.getElementById(
+            "pendingSection"
+        );
+
+
+    if (section) {
+
+        section.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE STUDENT LIST
+========================================================= */
+
+function createStudentList(students) {
+
+    if (!students.length) {
+
+        return "";
+
+    }
+
+
+    return students
+
+        .map(student => student.name)
+
+        .join(", ");
+
+}
+
+
+/* =========================================================
+   INDIVIDUAL STUDENT ATTENDANCE
+========================================================= */
+
+function handleStudentAttendance(command) {
+
+    const studentName =
+        extractStudentName(command);
+
+
+    if (!studentName) {
+
+        return false;
+
+    }
+
+
+    const student =
+        findStudentByName(studentName);
+
+
+    if (!student) {
+
+        return false;
+
+    }
+
+
+    openAttendanceSection();
+
+
+    const present =
+        isStudentPresent(student.name);
+
+
+    if (present) {
+
+        const response =
+            student.name +
+            " is present today.";
+
+
+        updateJarvis(
+            "STUDENT STATUS",
+            response
+        );
+
+
+        speak(
+            student.name +
+            " present hai."
+        );
+
+    } else {
+
+        const response =
+            student.name +
+            " is absent today.";
+
+
+        updateJarvis(
+            "STUDENT STATUS",
+            response
+        );
+
+
+        speak(
+            student.name +
+            " absent hai."
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   WHO IS PRESENT
+========================================================= */
+
+function handlePresentStudents() {
+
+    const students =
+        getPresentStudents();
+
+
+    openAttendanceSection();
+
+
+    if (students.length === 0) {
+
+        updateJarvis(
+            "PRESENT STUDENTS",
+            "No students are marked present yet."
+        );
+
+
+        speak(
+            "Abhi tak koi student present mark nahi hua hai."
+        );
+
+
+        return;
+
+    }
+
+
+    const names =
+        createStudentList(students);
+
+
+    updateJarvis(
+        "PRESENT STUDENTS",
+        "Present students are: " + names
+    );
+
+
+    speak(
+        "Present students hain: " + names
+    );
+
+}
+
+
+/* =========================================================
+   WHO IS ABSENT
+========================================================= */
+
+function handleAbsentStudents() {
+
+    const students =
+        getAbsentStudents();
+
+
+    openStudentsSection();
+
+
+    if (students.length === 0) {
+
+        updateJarvis(
+            "ABSENT STUDENTS",
+            "No students are absent."
+        );
+
+
+        speak(
+            "Koi student absent nahi hai."
+        );
+
+
+        return;
+
+    }
+
+
+    const names =
+        createStudentList(students);
+
+
+    updateJarvis(
+        "ABSENT STUDENTS",
+        "Absent students are: " + names
+    );
+
+
+    speak(
+        "Absent students hain: " + names
+    );
+
+}
+
+
+/* =========================================================
+   PRESENT COUNT
+========================================================= */
+
+function handlePresentCount() {
+
+    const count =
+        getPresentStudents().length;
+
+
+    updateJarvis(
+        "ATTENDANCE SUMMARY",
+        "Total " +
+        count +
+        " students are present."
+    );
+
+
+    speak(
+        "Aaj total " +
+        count +
+        " students present hain."
+    );
+
+}
+
+
+/* =========================================================
+   ABSENT COUNT
+========================================================= */
+
+function handleAbsentCount() {
+
+    const count =
+        getAbsentStudents().length;
+
+
+    updateJarvis(
+        "ATTENDANCE SUMMARY",
+        "Total " +
+        count +
+        " students are absent."
+    );
+
+
+    speak(
+        "Aaj total " +
+        count +
+        " students absent hain."
+    );
+
+}
+/* =========================================================
+   SEND COMMAND TO REAL JARVIS DATABASE API
+========================================================= */
+
+async function sendCommandToJarvis(command) {
+
+    try {
+
+        updateJarvis(
+            "CONTACTING JARVIS AI",
+            "Checking the real attendance database..."
+        );
+
+
+        const response = await fetch(
+            "/teacher/jarvis/command",
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    command: command
+
+                })
+
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        console.log(
+            "REAL JARVIS RESPONSE:",
+            data
+        );
+
+
+        if (!data.success) {
+
+            const errorMessage =
+                data.message ||
+                "JARVIS could not process this command.";
+
+
+            updateJarvis(
+                "JARVIS ERROR",
+                errorMessage
+            );
+
+
+            speak(errorMessage);
+
+            return;
+
+        }
+
+
+        updateJarvis(
+            data.status || "JARVIS RESPONSE",
+            data.message
+        );
+
+
+        speak(
+            data.speak || data.message
+        );
+
+
+        /*
+           Optional action returned by server
+        */
+
+        if (data.action === "attendance") {
+
+            openAttendanceSection();
+
+        }
+
+
+        if (data.action === "students") {
+
+            openStudentsSection();
+
+        }
+
+
+        if (data.action === "pending") {
+
+            openPendingSection();
+
+        }
+
+
+        if (data.action === "refresh") {
+
+            setTimeout(() => {
+
+                window.location.reload();
+
+            }, 1500);
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "JARVIS API ERROR:",
+            error
+        );
+
+
+        updateJarvis(
+            "CONNECTION ERROR",
+            "JARVIS could not connect to the server."
+        );
+
+
+        speak(
+            "Server se connection nahi ho pa raha hai."
+        );
+
+    }
+
+}
+
+/* =========================================================
+   MAIN JARVIS COMMAND PROCESSOR
+========================================================= */
+
+function executeJarvisCommand(originalCommand) {
+
+    const command =
+        normalizeCommand(originalCommand);
+        /* =====================================================
+   PRIORITY STUDENT NAME SEARCH
+===================================================== */
+
+const allStudentsForJarvis = getAllStudents();
+
+const foundStudentByVoice = allStudentsForJarvis.find(student => {
+
+    const studentName =
+        cleanStudentName(student.name);
+
+    return (
+        command.includes(studentName)
+    );
+
+});
+
+
+if (foundStudentByVoice) {
+
+    console.log(
+        "STUDENT FOUND BY VOICE:",
+        foundStudentByVoice.name
+    );
+
+    openStudentsSection();
+
+    const presentToday =
+        isStudentPresent(
+            foundStudentByVoice.name
+        );
+
+    if (presentToday) {
+
+        updateJarvis(
+            "STUDENT FOUND",
+            foundStudentByVoice.name +
+            " mil gaya hai. Aaj attendance present hai."
+        );
+
+        speak(
+            foundStudentByVoice.name +
+            " mil gaya hai. Aaj inki attendance present hai."
+        );
+
+    } else {
+
+        updateJarvis(
+            "STUDENT FOUND",
+            foundStudentByVoice.name +
+            " mil gaya hai. Aaj attendance present nahi hai."
+        );
+
+        speak(
+            foundStudentByVoice.name +
+            " mil gaya hai. Aaj inki attendance present nahi hai."
+        );
+
+    }
+
+    return;
+
+}
+        console.log("ORIGINAL COMMAND:", originalCommand);
+console.log("NORMALIZED COMMAND:", command);
+
+
+    console.log(
+        "JARVIS HEARD:",
+        originalCommand
+    );
+
+
+    updateJarvis(
+        "PROCESSING COMMAND",
+        "Processing: " +
+        originalCommand
+    );
+    
+
+    /* =====================================================
+   DAILY LIFE + NATURAL JARVIS COMMANDS
+===================================================== */
+
+
+/* =====================================================
+   GOOD MORNING
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "good morning",
+        "morning jarvis",
+        "good morning jarvis",
+        "suprabhat",
+        "good morning bolo",
+        "say good morning"
+
+    ])
+
+) {
+
+    const response =
+        "Good morning, Sir. I hope you have a great day ahead.";
+
+    updateJarvis(
+        "GOOD MORNING",
+        response
+    );
+
+    speak(
+        "Good morning Sir. I hope aaj aapka din bahut achha rahe."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   GOOD AFTERNOON
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "good afternoon",
+        "afternoon jarvis",
+        "good afternoon jarvis"
+
+    ])
+
+) {
+
+    const response =
+        "Good afternoon, Sir. How can I help you today?";
+
+    updateJarvis(
+        "GOOD AFTERNOON",
+        response
+    );
+
+    speak(
+        "Good afternoon Sir. Main aapki help ke liye ready hoon."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   GOOD EVENING
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "good evening",
+        "evening jarvis",
+        "good evening jarvis"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "GOOD EVENING",
+        "Good evening, Sir. How was your day?"
+    );
+
+    speak(
+        "Good evening Sir. Aasha karta hoon aapka din achha raha hoga."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   HELLO / HI JARVIS
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "hello jarvis",
+        "hi jarvis",
+        "hey jarvis",
+        "hello",
+        "hi",
+        "namaste jarvis",
+        "namaste"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "JARVIS ONLINE",
+        "Hello! I am here and ready to help."
+    );
+
+    speak(
+        "Hello Sir. JARVIS online hai. Main aapki help ke liye ready hoon."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   HOW ARE YOU
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "how are you",
+        "how are you jarvis",
+        "jarvis how are you",
+        "kaise ho",
+        "kaisi ho",
+        "jarvis kaise ho",
+        "jarvis kaisi ho",
+        "aap kaise ho",
+        "tum kaise ho"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "JARVIS STATUS",
+        "I am absolutely fine and fully operational."
+    );
+
+    speak(
+        "Main bilkul theek hoon Sir. Mere saare systems properly kaam kar rahe hain. Aap kaise hain?"
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   WHAT'S UP / KYA HAAL HAI
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "kya haal hai",
+        "kya hal hai",
+        "jarvis kya haal hai",
+        "jarvis kya hal hai",
+        "whats up",
+        "what's up",
+        "kya chal raha hai",
+        "kya chal raha",
+        "sab theek hai"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "JARVIS STATUS",
+        "Everything is running perfectly."
+    );
+
+    speak(
+        "Sab badhiya hai Sir. Systems perfectly chal rahe hain. Main aapke next command ka wait kar raha hoon."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   THANK YOU
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "thank you",
+        "thanks",
+        "thank you jarvis",
+        "thanks jarvis",
+        "shukriya",
+        "dhanyavad"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "JARVIS RESPONSE",
+        "You are welcome."
+    );
+
+    speak(
+        "You're most welcome Sir. Aapki help karke mujhe khushi hui."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   WHO ARE YOU
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "who are you",
+        "what are you",
+        "tum kaun ho",
+        "aap kaun ho",
+        "jarvis tum kaun ho",
+        "jarvis kaun ho"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "IDENTITY",
+        "I am JARVIS, your AI assistant."
+    );
+
+    speak(
+        "Main JARVIS hoon Sir, aapka AI assistant. Main attendance system aur aapke commands mein help kar sakta hoon."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   WHAT CAN YOU DO
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "what can you do",
+        "what you can do",
+        "tum kya kar sakte ho",
+        "aap kya kar sakte ho",
+        "jarvis kya kar sakte ho",
+        "help me"
+
+    ])
+
+) {
+
+    const response =
+        "I can help with attendance, students, sessions and basic conversation.";
+
+    updateJarvis(
+        "JARVIS CAPABILITIES",
+        response
+    );
+
+    speak(
+        "Main attendance check kar sakta hoon, present aur absent students bata sakta hoon, student search kar sakta hoon, sessions manage karne mein help kar sakta hoon aur normal conversation bhi kar sakta hoon."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   TODAY'S DATE
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "what is today's date",
+        "today date",
+        "today's date",
+        "date kya hai",
+        "aaj ki date",
+        "aaj ka date",
+        "aaj date kya hai",
+        "date batao",
+        "what is the date"
+
+    ])
+
+) {
+
+    const today = new Date();
+
+    const dateText =
+        today.toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+    updateJarvis(
+        "TODAY'S DATE",
+        "Today is " + dateText
+    );
+
+    speak(
+        "Sir, aaj ki date " + dateText + " hai."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   CURRENT DAY
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "what day is today",
+        "today which day",
+        "aaj kaun sa din hai",
+        "aaj konsa din hai",
+        "aaj ka din kya hai",
+        "today day"
+
+    ])
+
+) {
+
+    const today = new Date();
+
+    const dayName =
+        today.toLocaleDateString(
+            "en-IN",
+            {
+                weekday: "long"
+            }
+        );
+
+    updateJarvis(
+        "TODAY",
+        "Today is " + dayName
+    );
+
+    speak(
+        "Sir, aaj " + dayName + " hai."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   CURRENT TIME
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "what time is it",
+        "current time",
+        "time kya hai",
+        "kitne baje hain",
+        "kitna time hua",
+        "abhi kitne baje hain",
+        "time batao"
+
+    ])
+
+) {
+
+    const now = new Date();
+
+    const timeText =
+        now.toLocaleTimeString(
+            "en-IN",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+    updateJarvis(
+        "CURRENT TIME",
+        "The current time is " + timeText
+    );
+
+    speak(
+        "Sir, abhi " + timeText + " baje hain."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   SYSTEM STATUS
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "system status",
+        "system kaisa hai",
+        "system check",
+        "status kya hai",
+        "jarvis status",
+        "are you working",
+        "kya tum kaam kar rahe ho"
+
+    ])
+
+) {
+
+    updateJarvis(
+        "SYSTEM STATUS",
+        "All JARVIS systems are operational."
+    );
+
+    speak(
+        "Sir, saare JARVIS systems properly operational hain."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   WHO IS PRESENT NATURAL LANGUAGE
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "kis kis ki attendance lagi hai",
+        "kis ki attendance lagi hai",
+        "jiski attendance lagi hai",
+        "jo present lage hain",
+        "jo bhi present hai",
+        "aaj kis kis ki attendance lagi",
+        "aaj kaun kaun present hai",
+        "aaj kaun present laga hai",
+        "kaun kaun present laga hai"
+
+    ])
+
+) {
+
+    handlePresentStudents();
+
+    return;
+
+}
+
+
+/* =====================================================
+   WHO IS ABSENT NATURAL LANGUAGE
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "kis ki attendance nahi lagi",
+        "kis kis ki attendance nahi lagi",
+        "kaun nahi aaya",
+        "kaun kaun nahi aaya",
+        "jo absent hain",
+        "aaj kaun absent hai",
+        "aaj kaun kaun absent hai"
+
+    ])
+
+) {
+
+    handleAbsentStudents();
+
+    return;
+
+}
+
+    /* =====================================================
+       CREATE SESSION
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "create session",
+
+            "new session",
+
+            "make session",
+
+            "start session",
+
+            "session create",
+
+            "session banao",
+
+            "naya session",
+
+            "attendance session"
+
+        ])
+
+    ) {
+
+        const input =
+            document.getElementById(
+                "sessionNameInput"
+            );
+
+
+        if (input) {
+
+            input.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "center"
+
+            });
+
+
+            setTimeout(() => {
+
+                input.focus();
+
+            }, 500);
+
+
+            updateJarvis(
+                "SESSION MODE",
+                "Session creation is ready. Enter the session name."
+            );
+
+
+            speak(
+                "Session creation ready hai. Session ka naam enter karo."
+            );
+
+        } else {
+
+            updateJarvis(
+                "SESSION ACTIVE",
+                "A session is already active."
+            );
+
+
+            speak(
+                "Ek session already active hai."
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       END SESSION
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "end session",
+
+            "stop session",
+
+            "close session",
+
+            "finish session",
+
+            "session end",
+
+            "session stop",
+
+            "session band",
+
+            "session bandh",
+
+            "session khatam"
+
+        ])
+
+    ) {
+
+        const button =
+            document.getElementById(
+                "endSessionButton"
+            );
+
+
+        if (button) {
+
+            button.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "center"
+
+            });
+
+
+            updateJarvis(
+                "SESSION CONTROL",
+                "End session button located."
+            );
+
+
+            speak(
+                "Session end button mil gaya hai."
+            );
+
+        } else {
+
+            updateJarvis(
+                "NO ACTIVE SESSION",
+                "There is no active session."
+            );
+
+
+            speak(
+                "Abhi koi active session nahi hai."
+            );
+
+        }
+
+
+        return;
+
+    }
+
+/* =====================================================
+   HOW MANY REGISTERED STUDENTS
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "how many students are registered",
+
+        "how many student are registered",
+
+        "how many students registered",
+
+        "how many student registered",
+
+        "total registered students",
+
+        "total registered student",
+
+        "registered students count",
+
+        "registered student count",
+
+        "student count",
+
+        "how many students",
+
+        "kitne students registered",
+
+        "kitne student registered",
+
+        "kitne students hain",
+
+        "kitne student hain"
+
+    ])
+
+) {
+
+    const students = getAllStudents();
+
+    const count = students.length;
+
+    updateJarvis(
+        "REGISTERED STUDENTS",
+        "Total " + count + " students are registered."
+    );
+
+    speak(
+        "Total " + count + " students registered hain."
+    );
+
+    return;
+
+}
+/* =====================================================
+   NATURAL STUDENT SEARCH
+===================================================== */
+
+if (
+
+    command.includes("dhundh") ||
+    command.includes("dhundo") ||
+    command.includes("dhoondo") ||
+    command.includes("find") ||
+    command.includes("search") ||
+    command.includes("kahan hai") ||
+    command.includes("locate")
+
+) {
+
+    const students = getAllStudents();
+
+    let searchName = command;
+
+    const removeWords = [
+
+        "jarvis",
+        "student",
+        "students",
+        "ko",
+        "ka",
+        "ki",
+        "ke",
+        "kya",
+        "hai",
+        "hain",
+        "ho",
+        "sakti",
+        "sakte",
+        "sakty",
+        "can",
+        "you",
+        "please",
+        "dhundh",
+        "dhundho",
+        "dhundo",
+        "dhoondo",
+        "find",
+        "search",
+        "student ko"
+
+    ];
+
+    removeWords.forEach(word => {
+
+        const regex =
+            new RegExp("\\b" + word + "\\b", "g");
+
+        searchName =
+            searchName.replace(regex, "");
+
+    });
+
+    searchName =
+        searchName.trim();
+
+    const student =
+        findStudentByName(searchName);
+
+    if (student) {
+
+        openStudentsSection();
+
+        updateJarvis(
+            "STUDENT FOUND",
+            student.name +
+            " mil gaya. Roll number: " +
+            student.rollNo
+        );
+
+        speak(
+            student.name +
+            " mil gaya hai. Roll number " +
+            student.rollNo
+        );
+
+        return;
+
+    }
+
+}
+/* =====================================================
+   NATURAL PRESENT STUDENTS COMMANDS
+===================================================== */
+
+if (
+
+    (
+        command.includes("present") &&
+        (
+            command.includes("kaun") ||
+            command.includes("kon") ||
+            command.includes("kis kis") ||
+            command.includes("kiski") ||
+            command.includes("attendance") ||
+            command.includes("lagi") ||
+            command.includes("lagaya")
+        )
+
+    )
+
+) {
+
+    handlePresentStudents();
+
+    return;
+
+}
+    /* =====================================================
+       HOW MANY PRESENT
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "how many students are present",
+
+            "how many present",
+
+            "total present",
+
+            "present count",
+
+            "kitne present",
+
+            "kitne student present",
+
+            "kitne students present"
+
+        ])
+
+    ) {
+
+        handlePresentCount();
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       HOW MANY ABSENT
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "how many students are absent",
+
+            "how many absent",
+
+            "total absent",
+
+            "absent count",
+
+            "kitne absent",
+
+            "kitne student absent",
+
+            "kitne students absent"
+            
+
+        ])
+
+    ) {
+
+        handleAbsentCount();
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       WHO IS PRESENT
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "who is present",
+
+            "who are present",
+
+            "present students",
+
+            "show present",
+
+            "who came",
+
+            "who has come",
+
+            "who attended",
+
+            "kaun kaun present",
+
+            "kon kon present",
+
+            "kaun aya",
+
+            "kaun aaya",
+
+            "kaun kaun aya",
+
+            "kaun kaun aaya",
+
+            "kon aya",
+
+            "kon aaya",
+
+            "kon kon aya"
+
+        ])
+
+    ) {
+
+        handlePresentStudents();
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       WHO IS ABSENT
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "who is absent",
+
+            "absent students",
+
+            "show absent",
+
+            "who did not come",
+
+            "who is not present",
+
+            "kaun absent",
+
+            "kon absent",
+
+            "kaun kaun absent",
+
+            "kon kon absent",
+
+            "aaj kaun absent",
+
+            "aaj kon absent"
+
+        ])
+
+    ) {
+
+        handleAbsentStudents();
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       INDIVIDUAL STUDENT ATTENDANCE
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "present",
+
+            "absent",
+
+            "attendance",
+
+            "check",
+
+            "status"
+
+        ])
+
+    ) {
+
+        const handled =
+            handleStudentAttendance(command);
+
+
+        if (handled) {
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SHOW ATTENDANCE
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "show attendance",
+
+            "open attendance",
+
+            "attendance show",
+
+            "attendance dikhao",
+
+            "attendance"
+
+        ])
+
+    ) {
+
+        openAttendanceSection();
+
+
+        updateJarvis(
+            "ATTENDANCE RECORDS",
+            "Opening attendance records."
+        );
+
+
+        speak(
+            "Attendance records open kar raha hoon."
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       SHOW STUDENTS
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "show students",
+
+            "open students",
+
+            "all students",
+
+            "student list",
+
+            "registered students",
+
+            "students dikhao",
+
+            "show student"
+
+        ])
+
+    ) {
+
+        openStudentsSection();
+
+
+        updateJarvis(
+            "STUDENT DATABASE",
+            "Opening registered students."
+        );
+
+
+        speak(
+            "Registered students open kar raha hoon."
+        );
+
+
+        return;
+
+    }
+    /* =====================================================
+   TOTAL REGISTERED STUDENTS
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "how many students are registered",
+        "how many student are registered",
+        "how many students",
+        "total students",
+        "registered students count",
+        "student count",
+
+        "kitne students registered hain",
+        "kitne student registered hain",
+        "total students kitne hain",
+        "kitne bacche hain",
+        "class mein kitne bacche hain",
+        "meri class mein kitne bacche hain",
+        "kitne students hain",
+        "registered bacche kitne hain"
+
+    ])
+
+) {
+
+    const students = getAllStudents();
+
+    const count = students.length;
+
+    const response =
+        "Total " + count + " students are registered.";
+
+    updateJarvis(
+        "REGISTERED STUDENTS",
+        response
+    );
+
+    speak(
+        "Aapki class mein total " +
+        count +
+        " students registered hain."
+    );
+
+    return;
+
+}
+
+
+/* =====================================================
+   SEARCH STUDENT BY NAME
+===================================================== */
+
+if (
+
+    hasAny(command, [
+
+        "search",
+        "find",
+        "dhundo",
+        "dhoondo",
+        "dhundh",
+        "dhundho",
+        "khojo",
+        "locate"
+
+    ])
+
+) {
+
+    const students = getAllStudents();
+
+    let foundStudent = null;
+
+    for (const student of students) {
+
+        const studentName =
+            cleanStudentName(student.name);
+
+        if (
+            command.includes(studentName) ||
+            studentName.includes(command)
+        ) {
+
+            foundStudent = student;
+
+            break;
+
+        }
+
+    }
+
+
+    /* SEARCH USING INDIVIDUAL WORDS */
+
+    if (!foundStudent) {
+
+        for (const student of students) {
+
+            const words =
+                cleanStudentName(student.name)
+                    .split(" ");
+
+            const matched =
+                words.some(word =>
+                    word.length > 2 &&
+                    command.includes(word)
+                );
+
+            if (matched) {
+
+                foundStudent = student;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    if (foundStudent) {
+
+        openStudentsSection();
+
+        const attendance =
+            isStudentPresent(foundStudent.name);
+
+        let response = "";
+
+        if (attendance) {
+
+            response =
+                foundStudent.name +
+                " mil gaya. Iski attendance present hai.";
+
+            speak(
+                foundStudent.name +
+                " mil gaya. Inki attendance aaj present hai."
+            );
+
+        } else {
+
+            response =
+                foundStudent.name +
+                " mil gaya. Iski attendance present nahi hai.";
+
+            speak(
+                foundStudent.name +
+                " mil gaya. Inki attendance aaj present nahi hai."
+            );
+
+        }
+
+
+        updateJarvis(
+            "STUDENT FOUND",
+            response
+        );
+
+        return;
+
+    }
+
+}
+
+
+    /* =====================================================
+       SEARCH STUDENT
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "search student",
+
+            "find student",
+
+            "student search",
+
+            "student dhundo",
+
+            "student dhoondo"
+
+        ])
+
+    ) {
+
+        openStudentsSection();
+
+
+        setTimeout(() => {
+
+            if (studentSearch) {
+
+                studentSearch.focus();
+
+            }
+
+        }, 500);
+
+
+        updateJarvis(
+            "STUDENT SEARCH",
+            "Student search is ready."
+        );
+
+
+        speak(
+            "Student search ready hai."
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       PENDING STUDENTS
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "approve students",
+
+            "pending students",
+
+            "pending student",
+
+            "student approvals",
+
+            "approvals"
+
+        ])
+
+    ) {
+
+        openPendingSection();
+
+
+        updateJarvis(
+            "APPROVAL CENTER",
+            "Opening pending student approvals."
+        );
+
+
+        speak(
+            "Pending student approvals open kar raha hoon."
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       REFRESH
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "refresh",
+
+            "reload",
+
+            "refresh page",
+
+            "reload page"
+
+        ])
+
+    ) {
+
+        updateJarvis(
+            "REFRESHING",
+            "Refreshing the command center."
+        );
+
+
+        speak(
+            "Command center refresh kar raha hoon."
+        );
+
+
+        setTimeout(() => {
+
+            window.location.reload();
+
+        }, 1200);
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       HELP
+    ===================================================== */
+
+    if (
+
+        hasAny(command, [
+
+            "help",
+
+            "commands",
+
+            "what can you do",
+
+            "madad",
+
+            "kya kar sakte ho"
+
+        ])
+
+    ) {
+
+        const helpText =
+            "You can ask who is present, who is absent, check student attendance, count present or absent students, show attendance, show students, create session, end session, search students, approve students, or refresh.";
+
+
+        updateJarvis(
+            "AVAILABLE COMMANDS",
+            helpText
+        );
+
+
+        speak(
+            "Aap pooch sakte hain kaun present hai, kaun absent hai, kisi student ki attendance, kitne students present ya absent hain, attendance dikhao, students dikhao, session create karo ya end session."
+        );
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       UNKNOWN COMMAND
+    ===================================================== */
+
+    updateJarvis(
+        "COMMAND NOT UNDERSTOOD",
+        "I could not understand: " +
+        originalCommand
+    );
+
+
+    speak(
+        "Sorry, mujhe samajh nahi aaya. Dobara normal language mein bolo."
+    );
+
+}
+
+
+/* =========================================================
+   RESTART LISTENING
+========================================================= */
+
+function restartListening(delay = 500) {
+
+    clearTimeout(restartTimer);
+
+
+    if (!jarvisEnabled) {
+
+        return;
+
+    }
+
+
+    if (isSpeaking) {
+
+        return;
+
+    }
+
+
+    restartTimer =
+        setTimeout(() => {
+
+            startListening();
+
+        }, delay);
+
+}
+
+
+/* =========================================================
+   START LISTENING
+========================================================= */
+
+function startListening() {
+
+    if (!jarvisEnabled) {
+
+        return;
+
+    }
+
+
+    if (!recognition) {
+
+        return;
+
+    }
+
+
+    if (recognitionRunning) {
+
+        return;
+
+    }
+
+
+    try {
+
+        recognition.start();
+
+    } catch (error) {
+
+        console.log(
+            "Recognition start error:",
+            error
+        );
+
+
+        restartListening(1000);
+
+    }
+
+}
+
+
+/* =========================================================
+   STOP JARVIS
+========================================================= */
+
+function stopJarvis() {
+
+    jarvisEnabled = false;
+
+
+    clearTimeout(restartTimer);
+
+
+    if (window.speechSynthesis) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+
+    isSpeaking = false;
+
+
+    try {
+
+        if (recognition) {
+
+            recognition.stop();
+
+        }
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+
+    recognitionRunning = false;
+
+
+    removeJarvisListeningUI();
+
+
+    updateJarvis(
+        "SYSTEM READY",
+        "JARVIS is offline. Click microphone to activate."
+    );
+
+
+    if (jarvisButton) {
+
+        jarvisButton.title =
+            "Activate JARVIS";
+
+    }
+
+}
+
+
+/* =========================================================
+   ACTIVATE JARVIS
+========================================================= */
+
+function activateJarvis() {
+
+    jarvisEnabled = true;
+
+
+    updateJarvis(
+        "JARVIS ONLINE",
+        "Continuous listening activated. Speak naturally."
+    );
+
+
+    if (jarvisButton) {
+
+        jarvisButton.title =
+            "Stop JARVIS";
+
+    }
+
+
+    speak(
+        "JARVIS online. Main continuous listening mode mein hoon. Aap attendance ke baare mein kuch bhi pooch sakte hain."
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE SPEECH RECOGNITION
+========================================================= */
+
+if (SpeechRecognition) {
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+    recognition.maxAlternatives = 3;
+
+
+    /*
+       Hindi + Hinglish recognition
+    */
+
+    recognition.lang = "en-IN";
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    recognition.onstart =
+        function () {
+
+            recognitionRunning = true;
+
+
+            setJarvisListeningUI();
+
+
+            updateJarvis(
+                "LISTENING...",
+                "JARVIS is listening. Speak naturally."
+            );
+
+        };
+
+
+    /* =====================================================
+       RESULT
+    ===================================================== */
+
+    recognition.onresult =
+        function (event) {
+
+            let bestCommand = "";
+
+
+            const results =
+                event.results[0];
+
+
+            for (
+
+                let i = 0;
+
+                i < results.length;
+
+                i++
+
+            ) {
+
+                const transcript =
+                    results[i].transcript;
+
+
+                if (transcript) {
+
+                    bestCommand =
+                        transcript.trim();
+
+                    break;
+
+                }
+
+            }
+
+
+            if (bestCommand) {
+
+    console.log(
+        "JARVIS HEARD:",
+        bestCommand
+    );
+
+    executeJarvisCommand(
+    bestCommand
+);
+
+}
+
+        };
+
+
+    /* =====================================================
+       ERROR
+    ===================================================== */
+
+    recognition.onerror =
+        function (event) {
+
+            console.log(
+                "Speech Recognition Error:",
+                event.error
+            );
+
+
+            recognitionRunning = false;
+
+
+            if (
+                event.error === "not-allowed" ||
+                event.error === "service-not-allowed"
+            ) {
+
+                jarvisEnabled = false;
+
+
+                removeJarvisListeningUI();
+
+
+                updateJarvis(
+                    "MICROPHONE BLOCKED",
+                    "Please allow microphone permission in Chrome."
+                );
+
+
+                return;
+
+            }
+
+
+            if (event.error === "no-speech") {
+
+                if (jarvisEnabled) {
+
+                    restartListening(500);
+
+                }
+
+
+                return;
+
+            }
+
+
+            if (event.error === "aborted") {
+
+                return;
+
+            }
+
+
+            if (event.error === "network") {
+
+                updateJarvis(
+                    "VOICE NETWORK ERROR",
+                    "Speech recognition requires internet."
+                );
+
+
+                if (jarvisEnabled) {
+
+                    restartListening(2000);
+
+                }
+
+
+                return;
+
+            }
+
+
+            if (jarvisEnabled) {
+
+                restartListening(1000);
+
+            }
+
+        };
+
+
+    /* =====================================================
+       END
+    ===================================================== */
+
+    recognition.onend =
+        function () {
+
+            recognitionRunning = false;
+
+
+            if (
+
+                jarvisEnabled &&
+
+                !isSpeaking
+
+            ) {
+
+                restartListening(500);
+
+            }
+
+        };
+
+
+    /* =====================================================
+       MICROPHONE BUTTON
+    ===================================================== */
+
+    if (jarvisButton) {
+
+        jarvisButton.addEventListener(
+            "click",
+            function () {
+
+                if (jarvisEnabled) {
+
+                    stopJarvis();
+
+                } else {
+
+                    activateJarvis();
+
+                }
+
+            }
+        );
+
+    }
+
+
+} else {
+
+
+    if (jarvisButton) {
+
+        jarvisButton.addEventListener(
+            "click",
+            function () {
+
+                updateJarvis(
+                    "NOT SUPPORTED",
+                    "Speech recognition is not supported. Please use Google Chrome."
+                );
+
+            }
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Attendance Scanner</title>
+
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FACE API
+    ====================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js">
+    </script>
+
+
+    <style>
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: Poppins, sans-serif;
+
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    #073b55 0%,
+                    #050816 45%,
+                    #02040b 100%
+                );
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: white;
+
+            padding: 20px;
+
+        }
+
+
+        .container {
+
+            width: 560px;
+
+            max-width: 100%;
+
+            padding: 25px;
+
+            background:
+                rgba(8, 18, 38, 0.94);
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.25);
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 0 30px
+                rgba(0, 234, 255, 0.15),
+
+                inset 0 0 25px
+                rgba(0, 234, 255, 0.03);
+
+            text-align: center;
+
+        }
+
+
+        .badge {
+
+            display: inline-block;
+
+            padding: 6px 14px;
+
+            margin-bottom: 10px;
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.35);
+
+            border-radius: 30px;
+
+            color: #00eaff;
+
+            font-size: 11px;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        h1 {
+
+            margin-bottom: 20px;
+
+            color: #00eaff;
+
+            font-size: 27px;
+
+            text-shadow:
+                0 0 12px
+                rgba(0, 234, 255, 0.45);
+
+        }
+
+
+        .student-info {
+
+            margin-bottom: 18px;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(0, 234, 255, 0.04);
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.12);
+
+            font-size: 13px;
+
+            color: #9bdcea;
+
+        }
+
+
+        .student-info strong {
+
+            color: #00eaff;
+
+        }
+
+
+        /* =====================================================
+           SESSION SELECTOR
+        ====================================================== */
+
+        .session-box {
+
+            margin-bottom: 18px;
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(0, 234, 255, 0.04);
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.12);
+
+            text-align: left;
+
+        }
+
+
+        .session-label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #00eaff;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        #sessionSelect {
+
+            width: 100%;
+
+            padding: 11px 12px;
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.35);
+
+            border-radius: 9px;
+
+            background:
+                rgba(2, 8, 20, 0.95);
+
+            color: white;
+
+            outline: none;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+        }
+
+
+        #sessionSelect:focus {
+
+            border-color:
+                #00eaff;
+
+            box-shadow:
+                0 0 12px
+                rgba(0, 234, 255, 0.25);
+
+        }
+
+
+        #sessionSelect option {
+
+            background:
+                #07111e;
+
+            color: white;
+
+        }
+
+
+        .session-empty {
+
+            margin-top: 8px;
+
+            font-size: 11px;
+
+            color: #ffb000;
+
+            line-height: 1.5;
+
+        }
+
+
+        .video-box {
+
+            position: relative;
+
+            width: 360px;
+
+            height: 270px;
+
+            max-width: 100%;
+
+            margin: auto;
+
+            border-radius: 17px;
+
+            overflow: hidden;
+
+            border:
+                2px solid
+                #00eaff;
+
+            box-shadow:
+                0 0 15px
+                rgba(0, 234, 255, 0.6),
+
+                inset 0 0 20px
+                rgba(0, 234, 255, 0.1);
+
+            background: #000;
+
+        }
+
+
+        video {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            transform:
+                scaleX(-1);
+
+        }
+
+
+        .scan-line {
+
+            position: absolute;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 2px;
+
+            background: #00ffff;
+
+            box-shadow:
+                0 0 12px cyan;
+
+            animation:
+                scan 2.5s linear infinite;
+
+            pointer-events: none;
+
+        }
+
+
+        @keyframes scan {
+
+            0% {
+
+                top: 0;
+
+                opacity: 0.5;
+
+            }
+
+            50% {
+
+                opacity: 1;
+
+            }
+
+            100% {
+
+                top: 268px;
+
+                opacity: 0.5;
+
+            }
+
+        }
+
+
+        .corner {
+
+            position: absolute;
+
+            width: 25px;
+
+            height: 25px;
+
+            border-color:
+                #00eaff;
+
+            border-style:
+                solid;
+
+            z-index: 2;
+
+            pointer-events:
+                none;
+
+        }
+
+
+        .corner.tl {
+
+            top: 8px;
+
+            left: 8px;
+
+            border-width:
+                3px 0 0 3px;
+
+        }
+
+
+        .corner.tr {
+
+            top: 8px;
+
+            right: 8px;
+
+            border-width:
+                3px 3px 0 0;
+
+        }
+
+
+        .corner.bl {
+
+            bottom: 8px;
+
+            left: 8px;
+
+            border-width:
+                0 0 3px 3px;
+
+        }
+
+
+        .corner.br {
+
+            bottom: 8px;
+
+            right: 8px;
+
+            border-width:
+                0 3px 3px 0;
+
+        }
+
+
+        .status-box {
+
+            margin-top: 18px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(0, 234, 255, 0.05);
+
+            border:
+                1px solid
+                rgba(0, 234, 255, 0.12);
+
+        }
+
+
+        #status {
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #00ff99;
+
+            min-height: 24px;
+
+        }
+
+
+        .session-info {
+
+            margin-top: 12px;
+
+            font-size: 12px;
+
+            color: #7de8ff;
+
+            min-height: 20px;
+
+        }
+
+
+        button {
+
+            margin-top: 18px;
+
+            width: 100%;
+
+            padding: 14px;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00d9ff,
+                    #007bff
+                );
+
+            border: none;
+
+            border-radius: 11px;
+
+            color: white;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 0 15px
+                rgba(0, 174, 255, 0.25);
+
+            transition:
+                0.25s;
+
+        }
+
+
+        button:hover:not(:disabled) {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 0 25px
+                rgba(0, 200, 255, 0.45);
+
+        }
+
+
+        button:disabled {
+
+            opacity: 0.5;
+
+            cursor:
+                not-allowed;
+
+            transform:
+                none;
+
+            box-shadow:
+                none;
+
+        }
+
+
+        .info {
+
+            margin-top: 12px;
+
+            font-size: 11px;
+
+            color: #7196a8;
+
+            line-height: 1.6;
+
+        }
+
+
+        .back {
+
+            display: inline-block;
+
+            margin-top: 15px;
+
+            color: #00eaff;
+
+            font-size: 12px;
+
+            text-decoration: none;
+
+        }
+
+
+        .back:hover {
+
+            text-decoration:
+                underline;
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            body {
+
+                padding: 10px;
+
+            }
+
+
+            .container {
+
+                padding: 18px;
+
+            }
+
+
+            h1 {
+
+                font-size: 22px;
+
+            }
+
+
+            .video-box {
+
+                width: 320px;
+
+                height: 240px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="badge">
+
+        JARVIS • AI SECURITY
+
+    </div>
+
+
+    <h1>
+
+        AI Attendance Scanner
+
+    </h1>
+
+
+    <!-- =====================================================
+         STUDENT INFORMATION
+    ====================================================== -->
+
+    <div class="student-info">
+
+        Student:
+
+        <strong>
+
+            <%= student.full_name %>
+
+        </strong>
+
+        &nbsp; | &nbsp;
+
+        Roll No:
+
+        <strong>
+
+            <%= student.roll_no %>
+
+        </strong>
+
+    </div>
+
+
+    <!-- =====================================================
+         ATTENDANCE SESSION
+    ====================================================== -->
+
+    <div class="session-box">
+
+        <label
+            for="sessionSelect"
+            class="session-label">
+
+            SELECT ATTENDANCE SESSION
+
+        </label>
+
+
+        <select
+            id="sessionSelect">
+
+            <option value="">
+
+                Loading attendance sessions...
+
+            </option>
+
+            <% if (activeSessions && activeSessions.length > 0) { %>
+
+                <% activeSessions.forEach(function(session) { %>
+
+                    <option
+                        value="<%= session.id %>">
+
+                        <%= session.session_name %>
+                        -
+                        <%= session.teacher_name || "Teacher" %>
+
+                    </option>
+
+                <% }); %>
+
+            <% } %>
+
+        </select>
+
+
+        <div
+            id="sessionEmpty"
+            class="session-empty"
+            style="display:none;">
+
+            No active attendance session available.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CAMERA
+    ====================================================== -->
+
+    <div class="video-box">
+
+
+        <video
+            id="video"
+            autoplay
+            muted
+            playsinline>
+        </video>
+
+
+        <div class="corner tl"></div>
+
+        <div class="corner tr"></div>
+
+        <div class="corner bl"></div>
+
+        <div class="corner br"></div>
+
+
+        <div class="scan-line"></div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         STATUS
+    ====================================================== -->
+
+    <div class="status-box">
+
+        <p id="status">
+
+            Initializing AI Scanner...
+
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         SESSION STATUS
+    ====================================================== -->
+
+    <p
+        id="sessionInfo"
+        class="session-info">
+
+        Checking attendance session...
+
+    </p>
+
+
+    <!-- =====================================================
+         BUTTON
+    ====================================================== -->
+
+    <button
+        id="btn"
+        type="button"
+        disabled>
+
+        MARK ATTENDANCE
+
+    </button>
+
+
+    <p class="info">
+
+        Keep your face clearly visible
+        inside the scanner.
+
+        <br>
+
+        Your face will be matched
+        with your registered face.
+
+    </p>
+
+
+    <a
+        class="back"
+        href="/student/dashboard">
+
+        ← Back to Dashboard
+
+    </a>
+
+
+</div>
+
+
+<script>
+
+
+// =====================================================
+// ELEMENTS
+// =====================================================
+
+const video =
+    document.getElementById("video");
+
+
+const status =
+    document.getElementById("status");
+
+
+const btn =
+    document.getElementById("btn");
+
+
+const sessionInfo =
+    document.getElementById("sessionInfo");
+
+
+const sessionSelect =
+    document.getElementById("sessionSelect");
+
+
+const sessionEmpty =
+    document.getElementById("sessionEmpty");
+
+
+// =====================================================
+// VARIABLES
+// =====================================================
+
+let cameraReady = false;
+
+let modelsReady = false;
+
+let detecting = false;
+
+let currentDescriptor = null;
+
+let attendanceProcessing = false;
+
+let activeSession = false;
+
+let detectionInterval = null;
+
+
+// =====================================================
+// ATTENDANCE API
+// =====================================================
+//
+// Controller:
+//
+// exports.markAttendance
+//
+// Route:
+//
+// POST /student/attendance/mark
+//
+// Controller requires:
+//
+// faceDescriptor
+//
+// AND:
+//
+// session_id
+//
+// =====================================================
+
+const ATTENDANCE_API =
+    "/student/attendance/mark";
+
+
+// =====================================================
+// STATUS FUNCTION
+// =====================================================
+
+function setStatus(
+    message,
+    color = "#00ff99"
+) {
+
+    status.textContent =
+        message;
+
+    status.style.color =
+        color;
+
+}
+
+
+// =====================================================
+// CHECK SELECTED SESSION
+// =====================================================
+
+function getSelectedSessionId() {
+
+    if (!sessionSelect) {
+
+        return null;
+
+    }
+
+
+    const value =
+        sessionSelect.value;
+
+
+    if (
+        !value ||
+        String(value).trim() === ""
+    ) {
+
+        return null;
+
+    }
+
+
+    const sessionId =
+        Number(value);
+
+
+    if (
+        !Number.isInteger(sessionId) ||
+        sessionId <= 0
+    ) {
+
+        return null;
+
+    }
+
+
+    return sessionId;
+
+}
+
+
+// =====================================================
+// UPDATE SESSION UI
+// =====================================================
+
+function updateSessionUI() {
+
+    const sessionId =
+        getSelectedSessionId();
+
+
+    if (!sessionId) {
+
+        btn.disabled =
+            true;
+
+        sessionInfo.textContent =
+            "🔴 Please select an attendance session.";
+
+        return false;
+
+    }
+
+
+    if (sessionEmpty) {
+
+        sessionEmpty.style.display =
+            "none";
+
+    }
+
+
+    sessionInfo.textContent =
+        "🟢 Attendance session selected.";
+
+    return true;
+
+}
+
+
+// =====================================================
+// CAMERA
+// =====================================================
+
+async function startCamera() {
+
+    try {
+
+        setStatus(
+            "📷 Starting Camera...",
+            "#00eaff"
+        );
+
+
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+
+            throw new Error(
+                "Camera API is not available."
+            );
+
+        }
+
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+
+                    width: {
+
+                        ideal: 640
+
+                    },
+
+                    height: {
+
+                        ideal: 480
+
+                    },
+
+                    frameRate: {
+
+                        ideal: 20,
+
+                        max: 30
+
+                    },
+
+                    facingMode:
+                        "user"
+
+                },
+
+                audio: false
+
+            });
+
+
+        video.srcObject =
+            stream;
+
+
+        await new Promise(
+            (resolve, reject) => {
+
+                video.onloadedmetadata =
+                    async () => {
+
+                        try {
+
+                            await video.play();
+
+                            resolve();
+
+                        } catch (error) {
+
+                            reject(error);
+
+                        }
+
+                    };
+
+            }
+        );
+
+
+        cameraReady =
+            true;
+
+
+        setStatus(
+            "📷 Camera Ready • Loading AI...",
+            "#00eaff"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "CAMERA ERROR:",
+            error
+        );
+
+
+        cameraReady =
+            false;
+
+
+        setStatus(
+            "❌ Camera could not start",
+            "#ff4d6d"
+        );
+
+
+        sessionInfo.textContent =
+            "Allow camera permission and reload the page.";
+
+    }
+
+}
+
+
+// =====================================================
+// LOAD FACE API MODELS
+// =====================================================
+
+async function loadModels() {
+
+    try {
+
+        setStatus(
+            "🤖 Loading Face AI Models...",
+            "#00eaff"
+        );
+
+
+        if (
+            typeof faceapi ===
+            "undefined"
+        ) {
+
+            throw new Error(
+                "face-api.js library was not loaded."
+            );
+
+        }
+
+
+        await faceapi.nets.tinyFaceDetector.loadFromUri(
+            "/models"
+        );
+
+
+        await faceapi.nets.faceLandmark68Net.loadFromUri(
+            "/models"
+        );
+
+
+        await faceapi.nets.faceRecognitionNet.loadFromUri(
+            "/models"
+        );
+
+
+        modelsReady =
+            true;
+
+
+        setStatus(
+            "✅ AI Models Ready • Show Your Face",
+            "#00ff99"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "MODEL ERROR:",
+            error
+        );
+
+
+        modelsReady =
+            false;
+
+
+        setStatus(
+            "❌ AI Models Failed",
+            "#ff4d6d"
+        );
+
+
+        sessionInfo.textContent =
+            "Check public/models folder and model files.";
+
+    }
+
+}
+
+
+// =====================================================
+// CHECK ACTIVE SESSION
+// =====================================================
+//
+// Controller response:
+//
+// {
+//     success: true,
+//     active: true,
+//     sessions: [...]
+// }
+//
+// =====================================================
+
+async function checkActiveSession() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/student/active-session",
+                {
+
+                    method:
+                        "GET",
+
+                    headers: {
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    credentials:
+                        "same-origin"
+
+                }
+            );
+
+
+        console.log(
+            "ACTIVE SESSION HTTP STATUS:",
+            response.status
+        );
+
+
+        if (
+            response.status ===
+            401
+        ) {
+
+            activeSession =
+                false;
+
+
+            sessionInfo.textContent =
+                "🔴 Student login required.";
+
+            return;
+
+        }
+
+
+        if (
+            !response.ok
+        ) {
+
+            activeSession =
+                false;
+
+
+            sessionInfo.textContent =
+                "🔴 Unable to check attendance sessions.";
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "ACTIVE SESSION RESPONSE:",
+            data
+        );
+
+
+        // =================================================
+        // CLEAR CURRENT OPTIONS
+        // =================================================
+
+        if (sessionSelect) {
+
+            sessionSelect.innerHTML =
+                "";
+
+        }
+
+
+        // =================================================
+        // NO ACTIVE SESSIONS
+        // =================================================
+
+        if (
+            !data ||
+            data.success !== true ||
+            !Array.isArray(data.sessions) ||
+            data.sessions.length === 0
+        ) {
+
+            activeSession =
+                false;
+
+
+            if (sessionSelect) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    "";
+
+                option.textContent =
+                    "No active attendance session";
+
+                sessionSelect.appendChild(
+                    option
+                );
+
+            }
+
+
+            if (sessionEmpty) {
+
+                sessionEmpty.style.display =
+                    "block";
+
+            }
+
+
+            sessionInfo.textContent =
+                "🔴 No active attendance session.";
+
+
+            btn.disabled =
+                true;
+
+
+            return;
+
+        }
+
+
+        // =================================================
+        // ACTIVE SESSIONS FOUND
+        // =================================================
+
+        activeSession =
+            true;
+
+
+        data.sessions.forEach(
+            (session) => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    session.id;
+
+
+                const teacherName =
+                    session.teacher_name ||
+                    session.teacher_username ||
+                    "Teacher";
+
+
+                option.textContent =
+                    `${session.session_name} - ${teacherName}`;
+
+
+                sessionSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // FIRST SESSION SELECT
+        // =================================================
+
+        if (
+            data.sessions.length > 0
+        ) {
+
+            sessionSelect.value =
+                data.sessions[0].id;
+
+        }
+
+
+        if (sessionEmpty) {
+
+            sessionEmpty.style.display =
+                "none";
+
+        }
+
+
+        sessionInfo.textContent =
+            `🟢 ${data.sessions.length} active attendance session${data.sessions.length > 1 ? "s" : ""} available.`;
+
+
+        updateSessionUI();
+
+
+    } catch (error) {
+
+        console.warn(
+            "SESSION CHECK:",
+            error
+        );
+
+
+        activeSession =
+            false;
+
+
+        sessionInfo.textContent =
+            "🔴 Unable to check attendance session.";
+
+        btn.disabled =
+            true;
+
+    }
+
+}
+
+
+// =====================================================
+// SESSION SELECT CHANGE
+// =====================================================
+
+if (sessionSelect) {
+
+    sessionSelect.addEventListener(
+        "change",
+        () => {
+
+            const sessionId =
+                getSelectedSessionId();
+
+
+            if (!sessionId) {
+
+                btn.disabled =
+                    true;
+
+
+                sessionInfo.textContent =
+                    "🔴 Please select an attendance session.";
+
+                return;
+
+            }
+
+
+            if (
+                currentDescriptor &&
+                Array.isArray(
+                    currentDescriptor
+                ) &&
+                currentDescriptor.length ===
+                    128 &&
+                !attendanceProcessing
+            ) {
+
+                btn.disabled =
+                    false;
+
+            }
+
+
+            sessionInfo.textContent =
+                "🟢 Attendance session selected.";
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// FACE DETECTION
+// =====================================================
+
+async function detectFace() {
+
+    if (
+        !cameraReady ||
+        !modelsReady ||
+        detecting ||
+        attendanceProcessing
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        video.readyState < 2
+    ) {
+
+        return;
+
+    }
+
+
+    detecting =
+        true;
+
+
+    try {
+
+        const detection =
+            await faceapi
+                .detectSingleFace(
+                    video,
+                    new faceapi.TinyFaceDetectorOptions({
+
+                        inputSize:
+                            160,
+
+                        scoreThreshold:
+                            0.5
+
+                    })
+                )
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+
+
+        if (
+            detection
+        ) {
+
+            const descriptor =
+                Array.from(
+                    detection.descriptor
+                );
+
+
+            if (
+                descriptor.length !==
+                128
+            ) {
+
+                currentDescriptor =
+                    null;
+
+
+                btn.disabled =
+                    true;
+
+
+                setStatus(
+                    "❌ Invalid face data",
+                    "#ff4d6d"
+                );
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // CHECK NUMERIC DESCRIPTOR
+            // =================================================
+
+            const valid =
+                descriptor.every(
+                    value =>
+                        Number.isFinite(
+                            Number(value)
+                        )
+                );
+
+
+            if (!valid) {
+
+                currentDescriptor =
+                    null;
+
+
+                btn.disabled =
+                    true;
+
+
+                setStatus(
+                    "❌ Invalid face descriptor",
+                    "#ff4d6d"
+                );
+
+
+                return;
+
+            }
+
+
+            currentDescriptor =
+                descriptor;
+
+
+            setStatus(
+                "😊 Face Detected • Ready",
+                "#00ff99"
+            );
+
+
+            // =================================================
+            // BUTTON ONLY ENABLES IF SESSION SELECTED
+            // =================================================
+
+            if (
+                getSelectedSessionId()
+            ) {
+
+                btn.disabled =
+                    false;
+
+            } else {
+
+                btn.disabled =
+                    true;
+
+            }
+
+
+        } else {
+
+            currentDescriptor =
+                null;
+
+
+            btn.disabled =
+                true;
+
+
+            setStatus(
+                "😐 No Face Detected",
+                "#ffaa00"
+            );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "FACE DETECTION ERROR:",
+            error
+        );
+
+
+        currentDescriptor =
+            null;
+
+
+        btn.disabled =
+            true;
+
+
+        setStatus(
+            "❌ Face detection error",
+            "#ff4d6d"
+        );
+
+
+    } finally {
+
+        detecting =
+            false;
+
+    }
+
+}
+
+
+// =====================================================
+// MARK ATTENDANCE
+// =====================================================
+
+btn.addEventListener(
+    "click",
+    async function () {
+
+        if (
+            attendanceProcessing
+        ) {
+
+            return;
+
+        }
+
+
+        // =================================================
+        // SESSION CHECK
+        // =================================================
+
+        const selectedSessionId =
+            getSelectedSessionId();
+
+
+        if (!selectedSessionId) {
+
+            setStatus(
+                "❌ Please select an attendance session.",
+                "#ff4d6d"
+            );
+
+
+            sessionInfo.textContent =
+                "Select the class/session before marking attendance.";
+
+
+            return;
+
+        }
+
+
+        // =================================================
+        // FACE CHECK
+        // =================================================
+
+        if (
+            !currentDescriptor ||
+            !Array.isArray(
+                currentDescriptor
+            ) ||
+            currentDescriptor.length !==
+                128
+        ) {
+
+            setStatus(
+                "❌ Please show your face first.",
+                "#ff4d6d"
+            );
+
+
+            return;
+
+        }
+
+
+        attendanceProcessing =
+            true;
+
+
+        btn.disabled =
+            true;
+
+
+        setStatus(
+            "🔍 Verifying Face...",
+            "#00eaff"
+        );
+
+
+        try {
+
+            console.log(
+                "================================"
+            );
+
+
+            console.log(
+                "ATTENDANCE REQUEST"
+            );
+
+
+            console.log(
+                "API:",
+                ATTENDANCE_API
+            );
+
+
+            console.log(
+                "Selected Session ID:",
+                selectedSessionId
+            );
+
+
+            console.log(
+                "Descriptor length:",
+                currentDescriptor.length
+            );
+
+
+            console.log(
+                "================================"
+            );
+
+
+            // =================================================
+            // CORRECT API
+            //
+            // POST /student/attendance/mark
+            //
+            // Controller requires:
+            //
+            // session_id
+            // faceDescriptor
+            // =================================================
+
+            const response =
+                await fetch(
+                    ATTENDANCE_API,
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+
+                        },
+
+                        credentials:
+                            "same-origin",
+
+                        body:
+                            JSON.stringify({
+
+                                session_id:
+                                    selectedSessionId,
+
+                                faceDescriptor:
+                                    currentDescriptor
+
+                            })
+
+                    }
+                );
+
+
+            console.log(
+                "HTTP STATUS:",
+                response.status
+            );
+
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            let data;
+
+
+            if (
+                contentType
+                    .toLowerCase()
+                    .includes(
+                        "application/json"
+                    )
+            ) {
+
+                data =
+                    await response.json();
+
+            } else {
+
+                const text =
+                    await response.text();
+
+
+                data = {
+
+                    success:
+                        false,
+
+                    message:
+                        text ||
+                        "Server returned an unexpected response."
+
+                };
+
+            }
+
+
+            console.log(
+                "SERVER RESPONSE:",
+                data
+            );
+
+
+            // =================================================
+            // SUCCESS
+            // =================================================
+
+            if (
+                response.ok &&
+                data &&
+                data.success === true
+            ) {
+
+                setStatus(
+                    "✅ " +
+                    (
+                        data.message ||
+                        "Attendance Marked Successfully."
+                    ),
+                    "#00ff99"
+                );
+
+
+                if (
+                    data.attendance &&
+                    data.attendance.session
+                ) {
+
+                    sessionInfo.textContent =
+                        "🟢 Session: " +
+                        data.attendance.session;
+
+                } else {
+
+                    sessionInfo.textContent =
+                        "🟢 Attendance Recorded Successfully.";
+
+                }
+
+
+                currentDescriptor =
+                    null;
+
+
+                btn.disabled =
+                    true;
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // API NOT FOUND
+            // =================================================
+
+            if (
+                response.status ===
+                404
+            ) {
+
+                console.error(
+                    "❌ ATTENDANCE API NOT FOUND:",
+                    ATTENDANCE_API
+                );
+
+
+                setStatus(
+                    "❌ Attendance API not found.",
+                    "#ff4d6d"
+                );
+
+
+                sessionInfo.textContent =
+                    "Check routes/student.js → POST /attendance/mark";
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // LOGIN REQUIRED
+            // =================================================
+
+            if (
+                response.status ===
+                401
+            ) {
+
+                setStatus(
+                    "❌ Student login required.",
+                    "#ff4d6d"
+                );
+
+
+                sessionInfo.textContent =
+                    "Please login again.";
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // BAD REQUEST
+            // =================================================
+
+            if (
+                response.status ===
+                400
+            ) {
+
+                setStatus(
+                    "❌ " +
+                    (
+                        data.message ||
+                        "Attendance request failed."
+                    ),
+                    "#ff4d6d"
+                );
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // FORBIDDEN
+            // =================================================
+
+            if (
+                response.status ===
+                403
+            ) {
+
+                setStatus(
+                    "❌ " +
+                    (
+                        data.message ||
+                        "Face verification failed."
+                    ),
+                    "#ff4d6d"
+                );
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // DUPLICATE
+            // =================================================
+
+            if (
+                response.status ===
+                409
+            ) {
+
+                setStatus(
+                    "⚠️ " +
+                    (
+                        data.message ||
+                        "Attendance already marked."
+                    ),
+                    "#ffaa00"
+                );
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // OTHER ERROR
+            // =================================================
+
+            setStatus(
+                "❌ " +
+                (
+                    data.message ||
+                    "Attendance could not be marked."
+                ),
+                "#ff4d6d"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ ATTENDANCE REQUEST ERROR:",
+                error
+            );
+
+
+            setStatus(
+                "❌ Could not connect to server.",
+                "#ff4d6d"
+            );
+
+
+            sessionInfo.textContent =
+                "Check whether Node.js server is running.";
+
+        } finally {
+
+            attendanceProcessing =
+                false;
+
+
+            // =================================================
+            // ENABLE BUTTON ONLY IF FACE + SESSION EXIST
+            // =================================================
+
+            setTimeout(
+                () => {
+
+                    if (
+                        !attendanceProcessing &&
+                        currentDescriptor &&
+                        Array.isArray(
+                            currentDescriptor
+                        ) &&
+                        currentDescriptor.length ===
+                            128 &&
+                        getSelectedSessionId()
+                    ) {
+
+                        btn.disabled =
+                            false;
+
+                    }
+
+                },
+                1200
+            );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// FACE DETECTION LOOP
+// =====================================================
+
+function startDetectionLoop() {
+
+    if (
+        detectionInterval
+    ) {
+
+        clearInterval(
+            detectionInterval
+        );
+
+    }
+
+
+    detectionInterval =
+        setInterval(
+            () => {
+
+                detectFace();
+
+            },
+            700
+        );
+
+}
+
+
+// =====================================================
+// STOP CAMERA
+// =====================================================
+
+function stopCamera() {
+
+    try {
+
+        if (
+            video.srcObject
+        ) {
+
+            const tracks =
+                video.srcObject.getTracks();
+
+
+            tracks.forEach(
+                track => {
+
+                    track.stop();
+
+                }
+            );
+
+
+            video.srcObject =
+                null;
+
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Camera stop error:",
+            error
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// PAGE CLOSE
+// =====================================================
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        if (
+            detectionInterval
+        ) {
+
+            clearInterval(
+                detectionInterval
+            );
+
+        }
+
+
+        stopCamera();
+
+    }
+);
+
+
+// =====================================================
+// INITIALIZE
+// =====================================================
+
+async function initializeScanner() {
+
+    try {
+
+        setStatus(
+            "🚀 Initializing Scanner...",
+            "#00eaff"
+        );
+
+
+        // =================================================
+        // LOAD MODELS
+        // =================================================
+
+        await loadModels();
+
+
+        if (!modelsReady) {
+
+            return;
+
+        }
+
+
+        // =================================================
+        // START CAMERA
+        // =================================================
+
+        await startCamera();
+
+
+        if (!cameraReady) {
+
+            return;
+
+        }
+
+
+        // =================================================
+        // CHECK ACTIVE SESSIONS
+        // =================================================
+
+        await checkActiveSession();
+
+
+        // =================================================
+        // START DETECTION
+        // =================================================
+
+        startDetectionLoop();
+
+
+        if (
+            cameraReady &&
+            modelsReady
+        ) {
+
+            if (
+                getSelectedSessionId()
+            ) {
+
+                setStatus(
+                    "😊 Show your face to continue.",
+                    "#00ff99"
+                );
+
+            } else {
+
+                setStatus(
+                    "⚠️ Select an attendance session first.",
+                    "#ffaa00"
+                );
+
+            }
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "INITIALIZATION ERROR:",
+            error
+        );
+
+
+        setStatus(
+            "❌ Scanner initialization failed.",
+            "#ff4d6d"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initializeScanner();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

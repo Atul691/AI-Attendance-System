@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Teacher Login
+    </title>
+
+
+    <style>
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #073b55 0%,
+                    #050816 50%,
+                    #02040b 100%
+                );
+
+            color: white;
+
+        }
+
+
+        .card {
+
+            width: 420px;
+
+            max-width: 100%;
+
+            padding: 40px;
+
+            background:
+                rgba(
+                    13,
+                    21,
+                    41,
+                    0.96
+                );
+
+            border:
+                1px solid
+                rgba(
+                    0,
+                    234,
+                    255,
+                    0.3
+                );
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 0 35px
+                rgba(
+                    0,
+                    234,
+                    255,
+                    0.18
+                );
+
+        }
+
+
+        .logo {
+
+            text-align: center;
+
+            font-size: 50px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        h2 {
+
+            text-align: center;
+
+            color: #00eaff;
+
+            margin-bottom: 10px;
+
+            text-shadow:
+                0 0 12px
+                rgba(
+                    0,
+                    234,
+                    255,
+                    0.45
+                );
+
+        }
+
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #9edfff;
+
+            font-size: 13px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-top: 15px;
+
+            margin-bottom: 7px;
+
+            color: #9edfff;
+
+            font-size: 13px;
+
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                1px solid
+                rgba(
+                    0,
+                    234,
+                    255,
+                    0.2
+                );
+
+            border-radius: 8px;
+
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.25
+                );
+
+            color: white;
+
+            outline: none;
+
+            font-size: 15px;
+
+        }
+
+
+        input:focus {
+
+            border-color:
+                #00eaff;
+
+            box-shadow:
+                0 0 10px
+                rgba(
+                    0,
+                    234,
+                    255,
+                    0.2
+                );
+
+        }
+
+
+        input::placeholder {
+
+            color:
+                #6d8d9c;
+
+        }
+
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00d4ff,
+                    #008cff
+                );
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            transition:
+                0.2s;
+
+        }
+
+
+        button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 0 22px
+                rgba(
+                    0,
+                    212,
+                    255,
+                    0.45
+                );
+
+        }
+
+
+        .register {
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            color: #9edfff;
+
+        }
+
+
+        .register a {
+
+            color: #00eaff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+        }
+
+
+        .register a:hover {
+
+            text-decoration:
+                underline;
+
+        }
+
+
+        .back {
+
+            display: block;
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            color: #7196a8;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+        }
+
+
+        .back:hover {
+
+            color: #00eaff;
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .card {
+
+                padding: 28px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+
+    <div class="logo">
+
+        👨‍🏫
+
+    </div>
+
+
+    <h2>
+
+        Teacher Login
+
+    </h2>
+
+
+    <p class="subtitle">
+
+        AI Attendance System
+
+    </p>
+
+
+    <form
+        action="/teacher/login"
+        method="POST"
+    >
+
+
+        <label>
+
+            Teacher ID
+
+        </label>
+
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter Teacher ID"
+            autocomplete="username"
+            required
+        >
+
+
+        <label>
+
+            Password
+
+        </label>
+
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            autocomplete="current-password"
+            required
+        >
+
+
+        <button
+            type="submit"
+        >
+
+            LOGIN
+
+        </button>
+
+
+    </form>
+
+
+    <div class="register">
+
+        New Teacher?
+
+        <a href="/teacher/register">
+
+            Create Teacher Account
+
+        </a>
+
+    </div>
+
+
+    <a
+        class="back"
+        href="/"
+    >
+
+        ← Back to Home
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>

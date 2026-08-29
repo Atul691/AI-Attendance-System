@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>STARK AI | Student Registration</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            color: #ffffff;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-start;
+
+            padding: 35px 18px;
+
+            overflow-x: hidden;
+
+            overflow-y: auto;
+
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(255, 55, 55, 0.28),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 0% 100%,
+                    rgba(255, 0, 0, 0.12),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020305 0%,
+                    #090b10 45%,
+                    #030406 100%
+                );
+        }
+
+
+        /* =====================================================
+           BACKGROUND
+        ===================================================== */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 650px;
+
+            height: 650px;
+
+            top: -300px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 35, 35, 0.16),
+                    transparent 65%
+                );
+
+            filter: blur(25px);
+
+            pointer-events: none;
+        }
+
+
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent
+                );
+        }
+
+
+        /* =====================================================
+           CARD
+        ===================================================== */
+
+        .card {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 480px;
+
+            max-width: 100%;
+
+            margin-bottom: 35px;
+
+            padding: 34px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 19, 23, 0.97),
+                    rgba(5, 6, 9, 0.97)
+                );
+
+            border: 1px solid rgba(255, 55, 55, 0.35);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 0 20px rgba(255, 0, 0, 0.10),
+                0 0 60px rgba(255, 0, 0, 0.06),
+                inset 0 0 25px rgba(255, 0, 0, 0.025);
+
+            backdrop-filter: blur(20px);
+        }
+
+
+        .card::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 8px;
+
+            border: 1px solid rgba(255, 55, 55, 0.10);
+
+            border-radius: 14px;
+
+            pointer-events: none;
+        }
+
+
+        .card::after {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 15%;
+
+            width: 70%;
+
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #ff3030,
+                    transparent
+                );
+
+            box-shadow:
+                0 0 12px #ff3030;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .arc {
+
+            width: 72px;
+
+            height: 72px;
+
+            margin: 0 auto 12px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 38px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #fff 0%,
+                    #ffe86a 8%,
+                    #ffc400 25%,
+                    #ff5b00 55%,
+                    #7b0000 100%
+                );
+
+            border: 3px solid #ffcc33;
+
+            box-shadow:
+                0 0 8px #ffcc33,
+                0 0 25px rgba(255, 70, 0, 0.8),
+                0 0 50px rgba(255, 0, 0, 0.35);
+
+            animation: arcPulse 2s infinite;
+        }
+
+
+        @keyframes arcPulse {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 8px #ffcc33,
+                    0 0 25px rgba(255, 70, 0, 0.8),
+                    0 0 50px rgba(255, 0, 0, 0.35);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 12px #fff0a0,
+                    0 0 35px rgba(255, 70, 0, 1),
+                    0 0 70px rgba(255, 0, 0, 0.45);
+            }
+        }
+
+
+        h2 {
+
+            text-align: center;
+
+            color: #ff3b3b;
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-shadow:
+                0 0 8px rgba(255, 0, 0, 0.6),
+                0 0 20px rgba(255, 0, 0, 0.25);
+
+            margin-bottom: 4px;
+        }
+
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #a8a8a8;
+
+            font-size: 11px;
+
+            letter-spacing: 1.4px;
+
+            margin-bottom: 25px;
+
+            text-transform: uppercase;
+        }
+
+
+        .system-line {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 22px;
+
+            color: #71ff88;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .system-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #00ff66;
+
+            box-shadow:
+                0 0 8px #00ff66;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .input-group {
+
+            margin-bottom: 17px;
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #ffb0b0;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .required {
+
+            color: #ff4545;
+
+            margin-left: 3px;
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #0c0d11,
+                    #111318
+                );
+
+            border: 1px solid rgba(255, 65, 65, 0.25);
+
+            font-size: 13px;
+
+            transition: 0.25s;
+        }
+
+
+        input::placeholder {
+
+            color: #60636a;
+        }
+
+
+        input:focus {
+
+            border-color: #ff3b3b;
+
+            box-shadow:
+                0 0 8px rgba(255, 30, 30, 0.25),
+                inset 0 0 10px rgba(255, 0, 0, 0.04);
+        }
+
+
+        input[type="file"] {
+
+            padding: 9px;
+
+            cursor: pointer;
+        }
+
+
+        input[type="file"]::file-selector-button {
+
+            border: 1px solid #ff4545;
+
+            padding: 8px 12px;
+
+            margin-right: 9px;
+
+            border-radius: 6px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #8b0000,
+                    #d60000
+                );
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           TEACHER BOX
+        ===================================================== */
+
+        .teacher-box {
+
+            margin-bottom: 19px;
+
+            padding: 13px;
+
+            border-radius: 10px;
+
+            border: 1px solid rgba(255, 170, 0, 0.28);
+
+            background:
+                rgba(255, 120, 0, 0.045);
+
+            box-shadow:
+                inset 0 0 15px rgba(255, 100, 0, 0.025);
+        }
+
+
+        .teacher-title {
+
+            color: #ffc44d;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.7px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .teacher-info {
+
+            color: #9d9d9d;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* =====================================================
+           PREVIEW
+        ===================================================== */
+
+        .preview-container {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            margin-top: 15px;
+
+            min-height: 145px;
+        }
+
+
+        #preview {
+
+            display: none;
+
+            width: 145px;
+
+            height: 145px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border: 3px solid #ff3535;
+
+            box-shadow:
+                0 0 10px #ff3535,
+                0 0 30px rgba(255, 0, 0, 0.35);
+        }
+
+
+        /* =====================================================
+           AI SCANNER
+        ===================================================== */
+
+        .scanner {
+
+            display: none;
+
+            margin-top: 16px;
+
+            padding: 13px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 30, 30, 0.04);
+
+            border: 1px solid rgba(255, 50, 50, 0.20);
+        }
+
+
+        .scanner.active {
+
+            display: block;
+        }
+
+
+        .scanner-text {
+
+            color: #ff6868;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .progress {
+
+            width: 100%;
+
+            height: 4px;
+
+            overflow: hidden;
+
+            border-radius: 10px;
+
+            background: #191b20;
+        }
+
+
+        .progress-bar {
+
+            width: 0%;
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ff0000,
+                    #ffcc33
+                );
+
+            box-shadow:
+                0 0 10px #ff3030;
+
+            transition: 0.3s;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        #status {
+
+            min-height: 25px;
+
+            margin-top: 16px;
+
+            text-align: center;
+
+            color: #70ff90;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           REGISTER BUTTON
+        ===================================================== */
+
+        button {
+
+            width: 100%;
+
+            margin-top: 14px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #8b0000,
+                    #e00000,
+                    #8b0000
+                );
+
+            background-size: 200% 100%;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.8px;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+
+            box-shadow:
+                0 0 12px rgba(255, 0, 0, 0.15);
+        }
+
+
+        button:hover:not(:disabled) {
+
+            transform: translateY(-2px);
+
+            background-position: 100% 0;
+
+            box-shadow:
+                0 0 15px rgba(255, 0, 0, 0.5),
+                0 0 30px rgba(255, 0, 0, 0.15);
+        }
+
+
+        button:disabled {
+
+            opacity: 0.45;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            color: #555960;
+
+            font-size: 9px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 520px) {
+
+            body {
+                padding: 20px 10px;
+            }
+
+            .card {
+
+                padding: 25px 20px;
+
+                border-radius: 17px;
+            }
+
+            h2 {
+
+                font-size: 21px;
+            }
+
+            .arc {
+
+                width: 62px;
+
+                height: 62px;
+
+                font-size: 32px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+
+    <!-- =====================================================
+         STARK HEADER
+    ===================================================== -->
+
+    <div class="arc">
+        ⚡
+    </div>
+
+
+    <h2>
+        SMART AI ATTENDANCE
+    </h2>
+
+
+    <div class="subtitle">
+        Student Face Registration System
+    </div>
+
+
+    <div class="system-line">
+
+        <span class="system-dot"></span>
+
+        JARVIS SECURITY SYSTEM ONLINE
+
+    </div>
+
+
+    <!-- =====================================================
+         REGISTER FORM
+    ===================================================== -->
+
+    <form
+        id="registerForm"
+        action="/student/register"
+        method="POST"
+        enctype="multipart/form-data"
+        novalidate
+    >
+
+
+        <!-- =================================================
+             TEACHER ID
+        ================================================= -->
+
+        <div class="teacher-box">
+
+            <div class="teacher-title">
+                ⚡ TEACHER ACCOUNT LINK
+            </div>
+
+            <div class="teacher-info">
+                Enter the Teacher ID to link this student
+                with the correct teacher account.
+            </div>
+
+            <input
+                type="number"
+                id="teacher_id"
+                name="teacher_id"
+                placeholder="Enter Teacher ID"
+                min="1"
+                step="1"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             FULL NAME
+        ================================================= -->
+
+        <div class="input-group">
+
+            <label>
+                Full Name
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             ROLL NUMBER
+        ================================================= -->
+
+        <div class="input-group">
+
+            <label>
+                Roll Number
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="roll_no"
+                name="roll_no"
+                placeholder="Enter roll number"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             EMAIL
+        ================================================= -->
+
+        <div class="input-group">
+
+            <label>
+                Email
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter email address"
+                autocomplete="email"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             PASSWORD
+        ================================================= -->
+
+        <div class="input-group">
+
+            <label>
+                Password
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create password"
+                autocomplete="new-password"
+                minlength="6"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             PHOTO
+        ================================================= -->
+
+        <div class="input-group">
+
+            <label>
+                Face Photo
+                <span class="required">*</span>
+            </label>
+
+            <input
+                id="photo"
+                type="file"
+                name="photo"
+                accept="image/jpeg,image/png,image/webp"
+                required
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             PHOTO PREVIEW
+        ================================================= -->
+
+        <div class="preview-container">
+
+            <img
+                id="preview"
+                alt="Face Preview"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             AI SCANNER
+        ================================================= -->
+
+        <div
+            id="scanner"
+            class="scanner"
+        >
+
+            <div class="scanner-text">
+                ⚡ STARK AI FACE ANALYSIS
+            </div>
+
+            <div class="progress">
+
+                <div
+                    id="progressBar"
+                    class="progress-bar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FACE DESCRIPTOR
+        ================================================= -->
+
+        <input
+            type="hidden"
+            id="faceDescriptor"
+            name="faceDescriptor"
+        >
+
+
+        <!-- =================================================
+             STATUS
+        ================================================= -->
+
+        <div id="status">
+            ⏳ Loading AI Models...
+        </div>
+
+
+        <!-- =================================================
+             REGISTER BUTTON
+        ================================================= -->
+
+        <button
+            id="registerBtn"
+            type="submit"
+            disabled
+        >
+            ⚡ REGISTER WITH SMART AI
+        </button>
+
+
+    </form>
+
+
+    <div class="footer">
+        SMART AI ATTENDANCE SYSTEM • ATUL SHARMA EDITION
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     FACE API
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+
+<script>
+
+/* =====================================================
+   DOM ELEMENTS
+===================================================== */
+
+const registerForm =
+    document.getElementById("registerForm");
+
+const teacherIdInput =
+    document.getElementById("teacher_id");
+
+const fullNameInput =
+    document.getElementById("full_name");
+
+const rollNoInput =
+    document.getElementById("roll_no");
+
+const emailInput =
+    document.getElementById("email");
+
+const passwordInput =
+    document.getElementById("password");
+
+const photo =
+    document.getElementById("photo");
+
+const preview =
+    document.getElementById("preview");
+
+const status =
+    document.getElementById("status");
+
+const scanner =
+    document.getElementById("scanner");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const faceDescriptor =
+    document.getElementById("faceDescriptor");
+
+const registerBtn =
+    document.getElementById("registerBtn");
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let modelsLoaded = false;
+
+let processingFace = false;
+
+let submittingForm = false;
+
+let currentPreviewURL = null;
+
+
+/* =====================================================
+   CONSTANTS
+===================================================== */
+
+const MODEL_PATH = "/models";
+
+const MAX_IMAGE_SIZE =
+    10 * 1024 * 1024;
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function setStatus(message) {
+
+    status.innerHTML = message;
+
+}
+
+
+/* =====================================================
+   RESET AI
+===================================================== */
+
+function resetAIState() {
+
+    faceDescriptor.value = "";
+
+    registerBtn.disabled = true;
+
+    progressBar.style.width = "0%";
+
+    scanner.classList.remove("active");
+
+    processingFace = false;
+
+}
+
+
+/* =====================================================
+   PREVIEW CLEANUP
+===================================================== */
+
+function cleanupPreviewURL() {
+
+    if (currentPreviewURL) {
+
+        URL.revokeObjectURL(
+            currentPreviewURL
+        );
+
+        currentPreviewURL = null;
+
+    }
+
+}
+
+
+/* =====================================================
+   FACE API CHECK
+===================================================== */
+
+function checkFaceAPI() {
+
+    if (
+        typeof faceapi === "undefined"
+    ) {
+
+        setStatus(
+            "❌ face-api.js failed to load."
+        );
+
+        modelsLoaded = false;
+
+        registerBtn.disabled = true;
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* =====================================================
+   LOAD MODELS
+===================================================== */
+
+async function loadModels() {
+
+    try {
+
+        if (!checkFaceAPI()) {
+            return;
+        }
+
+
+        modelsLoaded = false;
+
+        registerBtn.disabled = true;
+
+
+        setStatus(
+            "⏳ Connecting to STARK AI..."
+        );
+
+
+        setStatus(
+            "⏳ Loading Face Detector..."
+        );
+
+
+        await faceapi.nets.tinyFaceDetector.loadFromUri(
+            MODEL_PATH
+        );
+
+
+        setStatus(
+            "⏳ Loading Face Landmarks..."
+        );
+
+
+        await faceapi.nets.faceLandmark68Net.loadFromUri(
+            MODEL_PATH
+        );
+
+
+        setStatus(
+            "⏳ Loading Face Recognition..."
+        );
+
+
+        await faceapi.nets.faceRecognitionNet.loadFromUri(
+            MODEL_PATH
+        );
+
+
+        modelsLoaded = true;
+
+
+        setStatus(
+            "✅ JARVIS READY — Fill all fields & upload face photo"
+        );
+
+
+        console.log(
+            "======================================"
+        );
+
+        console.log(
+            "⚡ STARK AI FACE MODELS READY"
+        );
+
+        console.log(
+            "Tiny Face Detector: READY"
+        );
+
+        console.log(
+            "Face Landmarks: READY"
+        );
+
+        console.log(
+            "Face Recognition: READY"
+        );
+
+        console.log(
+            "======================================"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ FACE API MODEL ERROR",
+            error
+        );
+
+        modelsLoaded = false;
+
+        registerBtn.disabled = true;
+
+        setStatus(
+            "❌ AI Models Failed. Check /public/models"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   PHOTO SELECT
+===================================================== */
+
+photo.addEventListener(
+    "change",
+    async function () {
+
+        if (processingFace) {
+            return;
+        }
+
+
+        const file =
+            photo.files[0];
+
+
+        if (!file) {
+
+            resetAIState();
+
+            preview.style.display = "none";
+
+            cleanupPreviewURL();
+
+            return;
+
+        }
+
+
+        if (!modelsLoaded) {
+
+            setStatus(
+                "⏳ AI Models are still loading..."
+            );
+
+            photo.value = "";
+
+            return;
+
+        }
+
+
+        resetAIState();
+
+        processingFace = true;
+
+        scanner.classList.add("active");
+
+        progressBar.style.width = "5%";
+
+
+        /* =================================================
+           FILE TYPE
+        ================================================= */
+
+        const allowedTypes = [
+
+            "image/jpeg",
+
+            "image/png",
+
+            "image/webp"
+
+        ];
+
+
+        if (
+            !allowedTypes.includes(file.type)
+        ) {
+
+            setStatus(
+                "❌ Please select JPG, PNG or WEBP image."
+            );
+
+            photo.value = "";
+
+            scanner.classList.remove("active");
+
+            processingFace = false;
+
+            return;
+
+        }
+
+
+        /* =================================================
+           FILE SIZE
+        ================================================= */
+
+        if (
+            file.size > MAX_IMAGE_SIZE
+        ) {
+
+            setStatus(
+                "❌ Image is too large. Maximum 10 MB."
+            );
+
+            alert(
+                "Please select an image smaller than 10 MB."
+            );
+
+            photo.value = "";
+
+            scanner.classList.remove("active");
+
+            processingFace = false;
+
+            return;
+
+        }
+
+
+        /* =================================================
+           PREVIEW
+        ================================================= */
+
+        cleanupPreviewURL();
+
+
+        currentPreviewURL =
+            URL.createObjectURL(file);
+
+
+        preview.src =
+            currentPreviewURL;
+
+
+        preview.style.display =
+            "block";
+
+
+        progressBar.style.width =
+            "20%";
+
+
+        setStatus(
+            "🔍 Preparing STARK Face Analysis..."
+        );
+
+
+        try {
+
+            /* =============================================
+               IMAGE LOAD
+            ============================================= */
+
+            const img =
+                await faceapi.bufferToImage(file);
+
+
+            progressBar.style.width =
+                "40%";
+
+
+            setStatus(
+                "🔍 Detecting Face..."
+            );
+
+
+            /* =============================================
+               FACE DETECTION
+            ============================================= */
+
+            const detection =
+                await faceapi
+                    .detectSingleFace(
+                        img,
+                        new faceapi.TinyFaceDetectorOptions({
+                            inputSize: 320,
+                            scoreThreshold: 0.30
+                        })
+                    )
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+
+            progressBar.style.width =
+                "75%";
+
+
+            /* =============================================
+               FACE NOT FOUND
+            ============================================= */
+
+            if (!detection) {
+
+                setStatus(
+                    "❌ Face Not Found — Use a clear front-facing photo."
+                );
+
+                alert(
+                    "Face not found.\n\nPlease upload a clear front-facing photo with good lighting."
+                );
+
+                resetAIState();
+
+                photo.value = "";
+
+                preview.style.display =
+                    "none";
+
+                cleanupPreviewURL();
+
+                return;
+
+            }
+
+
+            /* =============================================
+               DESCRIPTOR
+            ============================================= */
+
+            const descriptor =
+                Array.from(
+                    detection.descriptor
+                );
+
+
+            if (
+                descriptor.length !== 128
+            ) {
+
+                throw new Error(
+                    "Face descriptor must contain exactly 128 values."
+                );
+
+            }
+
+
+            /* =============================================
+               VALIDATE DESCRIPTOR
+            ============================================= */
+
+            const validDescriptor =
+                descriptor.every(
+                    value =>
+                        Number.isFinite(
+                            Number(value)
+                        )
+                );
+
+
+            if (!validDescriptor) {
+
+                throw new Error(
+                    "Face descriptor contains invalid values."
+                );
+
+            }
+
+
+            /* =============================================
+               CLEAN DESCRIPTOR
+            ============================================= */
+
+            const cleanDescriptor =
+                descriptor.map(
+                    value =>
+                        Number(
+                            Number(value).toFixed(10)
+                        )
+                );
+
+
+            /* =============================================
+               SAVE DESCRIPTOR
+            ============================================= */
+
+            faceDescriptor.value =
+                JSON.stringify(
+                    cleanDescriptor
+                );
+
+
+            progressBar.style.width =
+                "100%";
+
+
+            setStatus(
+                "✅ Face Detected & Ready For Registration"
+            );
+
+
+            registerBtn.disabled =
+                false;
+
+
+            processingFace =
+                false;
+
+
+            setTimeout(
+                function () {
+
+                    scanner.classList.remove(
+                        "active"
+                    );
+
+                },
+                1200
+            );
+
+
+            console.log(
+                "======================================"
+            );
+
+            console.log(
+                "⚡ STARK AI FACE ANALYSIS COMPLETE"
+            );
+
+            console.log(
+                "Descriptor Length:",
+                cleanDescriptor.length
+            );
+
+            console.log(
+                "======================================"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ FACE DETECTION ERROR",
+                error
+            );
+
+
+            faceDescriptor.value =
+                "";
+
+            registerBtn.disabled =
+                true;
+
+            processingFace =
+                false;
+
+
+            setStatus(
+                "❌ Face Processing Failed. Try another photo."
+            );
+
+
+            photo.value =
+                "";
+
+            preview.style.display =
+                "none";
+
+            scanner.classList.remove(
+                "active"
+            );
+
+            progressBar.style.width =
+                "0%";
+
+
+            cleanupPreviewURL();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   FORM SUBMIT
+===================================================== */
+
+registerForm.addEventListener(
+    "submit",
+    function (event) {
+
+
+        /* =================================================
+           DOUBLE SUBMIT PROTECTION
+        ================================================= */
+
+        if (submittingForm) {
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           GET VALUES
+        ================================================= */
+
+        const teacherId =
+            teacherIdInput.value.trim();
+
+        const fullName =
+            fullNameInput.value.trim();
+
+        const rollNo =
+            rollNoInput.value.trim();
+
+        const email =
+            emailInput.value.trim();
+
+        const password =
+            passwordInput.value;
+
+        const photoFile =
+            photo.files &&
+            photo.files[0];
+
+
+        /* =================================================
+           TEACHER ID
+        ================================================= */
+
+        if (!teacherId) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter Teacher ID."
+            );
+
+            teacherIdInput.focus();
+
+            return;
+
+        }
+
+
+        if (
+            !/^[1-9][0-9]*$/.test(
+                teacherId
+            )
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter a valid Teacher ID."
+            );
+
+            teacherIdInput.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           FULL NAME
+        ================================================= */
+
+        if (!fullName) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter your full name."
+            );
+
+            fullNameInput.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           ROLL NUMBER
+        ================================================= */
+
+        if (!rollNo) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter Roll Number."
+            );
+
+            rollNoInput.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           EMAIL
+        ================================================= */
+
+        if (!email) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter Email."
+            );
+
+            emailInput.focus();
+
+            return;
+
+        }
+
+
+        if (
+            !emailInput.checkValidity()
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter a valid email address."
+            );
+
+            emailInput.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           PASSWORD
+        ================================================= */
+
+        if (!password.trim()) {
+
+            event.preventDefault();
+
+            alert(
+                "Please enter a password."
+            );
+
+            passwordInput.focus();
+
+            return;
+
+        }
+
+
+        if (
+            password.length < 6
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Password must be at least 6 characters."
+            );
+
+            passwordInput.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           PHOTO
+        ================================================= */
+
+        if (!photoFile) {
+
+            event.preventDefault();
+
+            alert(
+                "Please select your face photo."
+            );
+
+            photo.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           PHOTO TYPE
+        ================================================= */
+
+        const allowedTypes = [
+
+            "image/jpeg",
+
+            "image/png",
+
+            "image/webp"
+
+        ];
+
+
+        if (
+            !allowedTypes.includes(
+                photoFile.type
+            )
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Please select a JPG, PNG or WEBP image."
+            );
+
+            photo.value = "";
+
+            return;
+
+        }
+
+
+        /* =================================================
+           PHOTO SIZE
+        ================================================= */
+
+        if (
+            photoFile.size >
+            MAX_IMAGE_SIZE
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Image size must be less than 10 MB."
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           AI MODEL
+        ================================================= */
+
+        if (!modelsLoaded) {
+
+            event.preventDefault();
+
+            alert(
+                "AI models are not loaded yet."
+            );
+
+            setStatus(
+                "⏳ Please wait until AI models finish loading."
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           FACE PROCESSING
+        ================================================= */
+
+        if (processingFace) {
+
+            event.preventDefault();
+
+            alert(
+                "Face analysis is still running. Please wait."
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           FACE DESCRIPTOR
+        ================================================= */
+
+        if (
+            !faceDescriptor.value.trim()
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Please upload a clear face photo and wait for Face Detection."
+            );
+
+            photo.focus();
+
+            return;
+
+        }
+
+
+        /* =================================================
+           VALIDATE FACE DESCRIPTOR
+        ================================================= */
+
+        try {
+
+            const descriptor =
+                JSON.parse(
+                    faceDescriptor.value
+                );
+
+
+            if (
+                !Array.isArray(
+                    descriptor
+                )
+            ) {
+
+                throw new Error(
+                    "Descriptor is not an array."
+                );
+
+            }
+
+
+            if (
+                descriptor.length !== 128
+            ) {
+
+                throw new Error(
+                    "Descriptor must contain 128 values."
+                );
+
+            }
+
+
+            const valid =
+                descriptor.every(
+                    value =>
+                        Number.isFinite(
+                            Number(value)
+                        )
+                );
+
+
+            if (!valid) {
+
+                throw new Error(
+                    "Descriptor contains invalid values."
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ DESCRIPTOR VALIDATION ERROR:",
+                error
+            );
+
+
+            event.preventDefault();
+
+
+            alert(
+                "Face data is invalid. Please upload your face photo again."
+            );
+
+
+            faceDescriptor.value =
+                "";
+
+            registerBtn.disabled =
+                true;
+
+
+            return;
+
+        }
+
+
+        /* =================================================
+           FINAL SUBMIT
+        ================================================= */
+
+        submittingForm =
+            true;
+
+
+        registerBtn.disabled =
+            true;
+
+
+        registerBtn.innerHTML =
+            "⚡ PROCESSING STARK AI REGISTRATION...";
+
+
+        setStatus(
+            "🤖 JARVIS is processing your registration..."
+        );
+
+
+        console.log(
+            "======================================"
+        );
+
+        console.log(
+            "⚡ STARK AI STUDENT REGISTRATION"
+        );
+
+        console.log(
+            "Teacher ID:",
+            teacherId
+        );
+
+        console.log(
+            "Full Name:",
+            fullName
+        );
+
+        console.log(
+            "Roll Number:",
+            rollNo
+        );
+
+        console.log(
+            "Email:",
+            email
+        );
+
+        console.log(
+            "Face Descriptor:",
+            "READY"
+        );
+
+        console.log(
+            "Photo:",
+            photoFile.name
+        );
+
+        console.log(
+            "======================================"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   PAGE VISIBILITY
+===================================================== */
+
+document.addEventListener(
+    "visibilitychange",
+    function () {
+
+        if (
+            document.visibilityState ===
+            "visible"
+        ) {
+
+            console.log(
+                "⚡ JARVIS AI REGISTRATION ACTIVE"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   START AI
+===================================================== */
+
+window.addEventListener(
+    "load",
+    function () {
+
+
+        console.log(
+            "======================================"
+        );
+
+        console.log(
+            "⚡ STARK AI STUDENT REGISTRATION"
+        );
+
+        console.log(
+            "Starting Face Recognition Engine..."
+        );
+
+        console.log(
+            "======================================"
+        );
+
+
+        if (
+            typeof faceapi === "undefined"
+        ) {
+
+            setStatus(
+                "❌ face-api.js not loaded. Check CDN connection."
+            );
+
+            registerBtn.disabled =
+                true;
+
+            return;
+
+        }
+
+
+        loadModels();
+
+    }
+);
+
+
+/* =====================================================
+   PAGE ERROR HANDLER
+===================================================== */
+
+window.addEventListener(
+    "error",
+    function (event) {
+
+        console.error(
+            "❌ FRONTEND ERROR:",
+            event.error ||
+            event.message
+        );
+
+    }
+);
+
+
+/* =====================================================
+   UNHANDLED PROMISE
+===================================================== */
+
+window.addEventListener(
+    "unhandledrejection",
+    function (event) {
+
+        console.error(
+            "❌ UNHANDLED PROMISE ERROR:",
+            event.reason
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        About | AI Attendance System
+    </title>
+
+
+    <style>
+
+        /* =========================================
+           GLOBAL
+        ========================================= */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+
+            font-family:
+
+                Arial,
+                Helvetica,
+                sans-serif;
+
+
+            background:
+
+                radial-gradient(
+                    circle at center,
+                    #071827 0%,
+                    #030812 45%,
+                    #000000 100%
+                );
+
+
+            color: white;
+
+        }
+
+
+        /* =========================================
+           BACKGROUND GRID
+        ========================================= */
+
+        .background-grid {
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: -2;
+
+            opacity: 0.25;
+
+
+            background-image:
+
+                linear-gradient(
+                    rgba(0, 229, 255, 0.08) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(0, 229, 255, 0.08) 1px,
+                    transparent 1px
+                );
+
+
+            background-size:
+
+                50px 50px;
+
+        }
+
+
+        /* =========================================
+           GLOW EFFECTS
+        ========================================= */
+
+        .glow {
+
+            position: fixed;
+
+            width: 500px;
+
+            height: 500px;
+
+            border-radius: 50%;
+
+            filter: blur(120px);
+
+            opacity: 0.18;
+
+            pointer-events: none;
+
+            z-index: -1;
+
+        }
+
+
+        .glow.one {
+
+            background: #00eaff;
+
+            top: -150px;
+
+            left: -150px;
+
+        }
+
+
+        .glow.two {
+
+            background: #ff3b30;
+
+            bottom: -180px;
+
+            right: -150px;
+
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .navbar {
+
+            width: 100%;
+
+            padding:
+
+                20px
+                7%;
+
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+
+            border-bottom:
+
+                1px solid
+                rgba(0, 229, 255, 0.15);
+
+
+            background:
+
+                rgba(0, 0, 0, 0.35);
+
+
+            backdrop-filter:
+
+                blur(15px);
+
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .brand-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 50%;
+
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+
+            border:
+
+                2px solid
+                #00eaff;
+
+
+            color: #00eaff;
+
+            font-size: 22px;
+
+
+            box-shadow:
+
+                0 0 20px
+                rgba(0, 234, 255, 0.7);
+
+        }
+
+
+        .brand h2 {
+
+            font-size: 18px;
+
+            letter-spacing: 2px;
+
+            color: #eafcff;
+
+        }
+
+
+        .brand span {
+
+            color: #00eaff;
+
+        }
+
+
+        .home-btn {
+
+            text-decoration: none;
+
+            color: white;
+
+            padding:
+
+                10px
+                20px;
+
+
+            border:
+
+                1px solid
+                rgba(0, 234, 255, 0.6);
+
+
+            border-radius: 8px;
+
+
+            transition: 0.3s;
+
+        }
+
+
+        .home-btn:hover {
+
+            background:
+
+                rgba(0, 234, 255, 0.15);
+
+
+            box-shadow:
+
+                0 0 20px
+                rgba(0, 234, 255, 0.5);
+
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .main {
+
+            width: 100%;
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding:
+
+                70px
+                25px;
+
+        }
+
+
+        /* =========================================
+           HERO
+        ========================================= */
+
+        .hero {
+
+            text-align: center;
+
+            margin-bottom: 70px;
+
+        }
+
+
+        .system-label {
+
+            display: inline-block;
+
+            color: #00eaff;
+
+            letter-spacing: 4px;
+
+            font-size: 12px;
+
+            margin-bottom: 20px;
+
+
+            padding:
+
+                8px
+                15px;
+
+
+            border:
+
+                1px solid
+                rgba(0, 234, 255, 0.3);
+
+
+            border-radius: 30px;
+
+            background:
+
+                rgba(0, 234, 255, 0.05);
+
+        }
+
+
+        .hero h1 {
+
+            font-size:
+
+                clamp(
+                    38px,
+                    7vw,
+                    75px
+                );
+
+
+            margin-bottom: 20px;
+
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #ffffff,
+                    #00eaff,
+                    #ffffff
+                );
+
+
+            background-clip: text;
+
+            -webkit-background-clip: text;
+
+            color: transparent;
+
+
+            text-shadow:
+
+                0 0 40px
+                rgba(0, 234, 255, 0.15);
+
+        }
+
+
+        .hero p {
+
+            max-width: 750px;
+
+            margin: auto;
+
+            color: #a9c8d5;
+
+            line-height: 1.8;
+
+            font-size: 17px;
+
+        }
+
+
+        /* =========================================
+           ARC REACTOR
+        ========================================= */
+
+        .reactor-container {
+
+            width: 260px;
+
+            height: 260px;
+
+            margin:
+
+                50px auto;
+
+            position: relative;
+
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+        .arc-reactor {
+
+            width: 220px;
+
+            height: 220px;
+
+            border-radius: 50%;
+
+            position: relative;
+
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+
+            background:
+
+                radial-gradient(
+                    circle,
+                    #ffffff 0%,
+                    #b9faff 12%,
+                    #00eaff 22%,
+                    #063b52 45%,
+                    #02070d 68%
+                );
+
+
+            box-shadow:
+
+                0 0 20px #00eaff,
+
+                0 0 50px #00eaff,
+
+                0 0 100px
+                rgba(0, 234, 255, 0.8);
+
+
+            animation:
+
+                reactorGlow
+                2.5s
+                infinite
+                alternate;
+
+        }
+
+
+        .arc-reactor::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 245px;
+
+            height: 245px;
+
+            border-radius: 50%;
+
+
+            border:
+
+                5px solid
+                rgba(0, 234, 255, 0.75);
+
+
+            border-top-color: transparent;
+
+            border-bottom-color: transparent;
+
+
+            animation:
+
+                rotate
+                5s
+                linear
+                infinite;
+
+        }
+
+
+        .arc-reactor::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 275px;
+
+            height: 275px;
+
+            border-radius: 50%;
+
+
+            border:
+
+                2px dashed
+                rgba(0, 234, 255, 0.45);
+
+
+            animation:
+
+                rotateReverse
+                12s
+                linear
+                infinite;
+
+        }
+
+
+        .reactor-core {
+
+            width: 85px;
+
+            height: 85px;
+
+            border-radius: 50%;
+
+
+            background:
+
+                radial-gradient(
+                    circle,
+                    white,
+                    #bfffff 25%,
+                    #00eaff 60%,
+                    #007799
+                );
+
+
+            box-shadow:
+
+                0 0 30px white,
+
+                0 0 70px #00eaff;
+
+        }
+
+
+        @keyframes rotate {
+
+            from {
+
+                transform:
+                    rotate(0deg);
+
+            }
+
+
+            to {
+
+                transform:
+                    rotate(360deg);
+
+            }
+
+        }
+
+
+        @keyframes rotateReverse {
+
+            from {
+
+                transform:
+                    rotate(360deg);
+
+            }
+
+
+            to {
+
+                transform:
+                    rotate(0deg);
+
+            }
+
+        }
+
+
+        @keyframes reactorGlow {
+
+            from {
+
+                transform:
+                    scale(1);
+
+                box-shadow:
+
+                    0 0 20px #00eaff,
+
+                    0 0 50px #00eaff,
+
+                    0 0 100px
+                    rgba(0, 234, 255, 0.5);
+
+            }
+
+
+            to {
+
+                transform:
+                    scale(1.05);
+
+                box-shadow:
+
+                    0 0 30px white,
+
+                    0 0 80px #00eaff,
+
+                    0 0 140px
+                    rgba(0, 234, 255, 0.9);
+
+            }
+
+        }
+
+
+        /* =========================================
+           INFORMATION GRID
+        ========================================= */
+
+        .info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+
+                repeat(
+                    auto-fit,
+                    minmax(280px, 1fr)
+                );
+
+
+            gap: 25px;
+
+            margin-bottom: 70px;
+
+        }
+
+
+        .info-card {
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    rgba(8, 27, 42, 0.9),
+                    rgba(2, 8, 15, 0.9)
+                );
+
+
+            border:
+
+                1px solid
+                rgba(0, 234, 255, 0.18);
+
+
+            transition:
+
+                0.3s;
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .info-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 4px;
+
+            height: 100%;
+
+            background:
+
+                linear-gradient(
+                    #00eaff,
+                    transparent
+                );
+
+        }
+
+
+        .info-card:hover {
+
+            transform:
+
+                translateY(-8px);
+
+
+            border-color:
+
+                rgba(0, 234, 255, 0.6);
+
+
+            box-shadow:
+
+                0 20px 50px
+                rgba(0, 0, 0, 0.5),
+
+                0 0 30px
+                rgba(0, 234, 255, 0.12);
+
+        }
+
+
+        .card-icon {
+
+            font-size: 35px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .info-card h3 {
+
+            color: #00eaff;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .info-card p {
+
+            color: #a7bdc8;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =========================================
+           DEVELOPER SECTION
+        ========================================= */
+
+        .developer-section {
+
+            padding: 45px;
+
+            border-radius: 25px;
+
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    rgba(5, 22, 36, 0.95),
+                    rgba(1, 6, 12, 0.95)
+                );
+
+
+            border:
+
+                1px solid
+                rgba(0, 234, 255, 0.25);
+
+
+            box-shadow:
+
+                0 0 50px
+                rgba(0, 234, 255, 0.08);
+
+        }
+
+
+        .developer-content {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 45px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        /* =========================================
+           PROFILE IMAGE
+        ========================================= */
+
+        .profile-frame {
+
+            width: 220px;
+
+            height: 220px;
+
+            padding: 8px;
+
+            position: relative;
+
+
+            border-radius: 18px;
+
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #00eaff,
+                    #06394d,
+                    #00eaff
+                );
+
+
+            box-shadow:
+
+                0 0 30px
+                rgba(0, 234, 255, 0.5);
+
+        }
+
+
+        .profile-frame img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            display: block;
+
+
+            background: #07131d;
+
+        }
+
+
+        .developer-info {
+
+            max-width: 550px;
+
+        }
+
+
+        .developer-tag {
+
+            color: #ffb000;
+
+            font-size: 12px;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .developer-info h2 {
+
+            font-size: 40px;
+
+            margin-bottom: 15px;
+
+            color: white;
+
+        }
+
+
+        .developer-info h2 span {
+
+            color: #00eaff;
+
+        }
+
+
+        .developer-info p {
+
+            color: #9fb8c3;
+
+            line-height: 1.8;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .contact-box {
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+
+            background:
+
+                rgba(0, 234, 255, 0.05);
+
+
+            border:
+
+                1px solid
+                rgba(0, 234, 255, 0.15);
+
+        }
+
+
+        .contact-row {
+
+            margin: 10px 0;
+
+            color: #b6d5df;
+
+            font-size: 14px;
+
+        }
+
+
+        .contact-row strong {
+
+            color: #00eaff;
+
+        }
+
+
+        .contact-row a {
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+        }
+
+
+        .contact-row a:hover {
+
+            color: #00eaff;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 60px;
+
+            padding-top: 30px;
+
+
+            border-top:
+
+                1px solid
+                rgba(0, 234, 255, 0.12);
+
+        }
+
+
+        .footer p {
+
+            color: #607984;
+
+            font-size: 13px;
+
+        }
+
+
+        .footer span {
+
+            color: #00eaff;
+
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 600px) {
+
+
+            .navbar {
+
+                padding:
+
+                    15px
+                    20px;
+
+            }
+
+
+            .brand h2 {
+
+                display: none;
+
+            }
+
+
+            .main {
+
+                padding:
+
+                    50px
+                    18px;
+
+            }
+
+
+            .developer-section {
+
+                padding: 30px 20px;
+
+            }
+
+
+            .developer-info {
+
+                text-align: center;
+
+            }
+
+
+            .developer-info h2 {
+
+                font-size: 30px;
+
+            }
+
+
+            .contact-box {
+
+                text-align: left;
+
+            }
+
+
+            .arc-reactor {
+
+                width: 180px;
+
+                height: 180px;
+
+            }
+
+
+            .arc-reactor::before {
+
+                width: 200px;
+
+                height: 200px;
+
+            }
+
+
+            .arc-reactor::after {
+
+                width: 225px;
+
+                height: 225px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BACKGROUND -->
+
+    <div class="background-grid"></div>
+
+    <div class="glow one"></div>
+
+    <div class="glow two"></div>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+
+        <div class="brand">
+
+
+            <div class="brand-icon">
+
+                ⚙
+
+            </div>
+
+
+            <h2>
+
+                JARVIS
+
+                <span>
+
+                    AI SYSTEM
+
+                </span>
+
+            </h2>
+
+
+        </div>
+
+
+        <a
+            href="/"
+            class="home-btn"
+        >
+
+            ← Home
+
+        </a>
+
+
+    </nav>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+
+            <div class="system-label">
+
+                AI ATTENDANCE • JARVIS TECHNOLOGY
+
+            </div>
+
+
+            <h1>
+
+                About The System
+
+            </h1>
+
+
+            <p>
+
+                A futuristic AI-powered attendance management
+                system designed to make classroom attendance
+                smarter, faster, and more interactive using
+                face recognition and JARVIS-style voice assistance.
+
+            </p>
+
+
+            <!-- ARC REACTOR -->
+
+            <div class="reactor-container">
+
+
+                <div class="arc-reactor">
+
+
+                    <div class="reactor-core"></div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FEATURES -->
+
+        <section class="info-grid">
+
+
+            <div class="info-card">
+
+
+                <div class="card-icon">
+
+                    👁️
+
+                </div>
+
+
+                <h3>
+
+                    Face Recognition
+
+                </h3>
+
+
+                <p>
+
+                    Students can use camera-based technology
+                    for smart attendance marking using
+                    AI-powered face recognition.
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="info-card">
+
+
+                <div class="card-icon">
+
+                    🤖
+
+                </div>
+
+
+                <h3>
+
+                    JARVIS Voice Assistant
+
+                </h3>
+
+
+                <p>
+
+                    Teachers can interact with the system
+                    using natural voice commands to search
+                    students, check attendance and manage
+                    classroom information.
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="info-card">
+
+
+                <div class="card-icon">
+
+                    📊
+
+                </div>
+
+
+                <h3>
+
+                    Smart Attendance
+
+                </h3>
+
+
+                <p>
+
+                    Attendance records can be managed
+                    digitally with student information,
+                    sessions and attendance tracking
+                    in one centralized system.
+
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- DEVELOPER -->
+
+        <section class="developer-section">
+
+
+            <div class="developer-content">
+
+
+                <!-- IMAGE -->
+
+                <div class="profile-frame">
+
+
+                    <!--
+                        Put your image here:
+
+                        public/images/atul.jpg
+
+                        Then this will work automatically.
+                    -->
+
+                    <img
+                        src="/images/atul.jpg"
+                        alt="Atul Sharma"
+                    >
+
+
+                </div>
+
+
+
+                <!-- INFORMATION -->
+
+                <div class="developer-info">
+
+
+                    <div class="developer-tag">
+
+                        SYSTEM DEVELOPER
+
+                    </div>
+
+
+                    <h2>
+
+                        Developed By
+
+                        <span>
+
+                            Atul Sharma
+
+                        </span>
+
+                    </h2>
+
+
+                    <p>
+
+                        This AI Attendance System was developed
+                        as a modern technology project combining
+                        artificial intelligence, face recognition,
+                        database management and a futuristic
+                        JARVIS-inspired interface.
+
+                    </p>
+
+
+                    <p>
+
+                        The goal of this project is to make
+                        traditional attendance systems smarter,
+                        faster and easier for both teachers
+                        and students.
+
+                    </p>
+
+
+                    <!-- CONTACT -->
+
+                    <div class="contact-box">
+
+
+                        <div class="contact-row">
+
+                            <strong>
+
+                                👨‍💻 Developer:
+
+                            </strong>
+
+                            Atul Sharma
+
+                        </div>
+
+
+                        <div class="contact-row">
+
+                            <strong>
+
+                                📧 Email:
+
+                            </strong>
+
+
+                            <a
+                                href="mailto:atuls200598@gmail.com"
+                            >
+
+                                atuls200598@gmail.com
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="contact-row">
+
+                            <strong>
+
+                                🤖 Project:
+
+                            </strong>
+
+                            AI Attendance System with JARVIS
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+
+            <p>
+
+                © 2026
+
+                <span>
+
+                    AI Attendance System
+
+                </span>
+
+                • Developed by Atul Sharma
+
+            </p>
+
+
+        </footer>
+
+
+    </main>
+
+
+</body>
+
+</html>

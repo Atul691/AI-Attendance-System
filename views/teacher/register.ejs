@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart AI Attendance | Teacher Registration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            padding: 30px 15px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            background:
+                radial-gradient(
+                    circle at 50% 40%,
+                    rgba(120, 25, 5, 0.30) 0%,
+                    rgba(35, 8, 5, 0.18) 28%,
+                    rgba(3, 4, 7, 1) 72%
+                ),
+                #030407;
+
+            color: white;
+            position: relative;
+        }
+
+        /* =========================
+           TECH GRID
+        ========================== */
+
+        .grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 70, 20, 0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 70, 20, 0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+            z-index: 0;
+        }
+
+        /* =========================
+           AMBIENT GLOW
+        ========================== */
+
+        .glow {
+            position: fixed;
+
+            width: 430px;
+            height: 430px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: rgba(255, 50, 0, 0.08);
+
+            filter: blur(90px);
+
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* =========================
+           MAIN WRAPPER
+        ========================== */
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 450px;
+
+            position: relative;
+            z-index: 5;
+
+            margin: auto;
+        }
+
+        /* =========================
+           ARC REACTOR
+        ========================== */
+
+        .reactor {
+            width: 76px;
+            height: 76px;
+
+            margin: 0 auto 16px;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+
+            border: 2px solid #ff4b19;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255,255,255,0.08),
+                    rgba(255,50,0,0.03)
+                );
+
+            box-shadow:
+                0 0 10px rgba(255,70,20,.9),
+                0 0 25px rgba(255,70,20,.5),
+                inset 0 0 18px rgba(255,70,20,.55);
+
+            animation: reactorPulse 2.2s ease-in-out infinite;
+        }
+
+        .reactor::before {
+            content: "";
+
+            position: absolute;
+
+            width: 57px;
+            height: 57px;
+
+            border-radius: 50%;
+
+            border: 1px dashed rgba(255,110,60,.8);
+        }
+
+        .reactor-core {
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            box-shadow:
+                0 0 8px white,
+                0 0 20px #ff9a6a,
+                0 0 38px #ff4010;
+        }
+
+        @keyframes reactorPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* =========================
+           BRAND
+        ========================== */
+
+        .brand {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .brand h1 {
+            font-size: 26px;
+            line-height: 1.2;
+
+            font-weight: 800;
+
+            letter-spacing: 3px;
+
+            color: #ffffff;
+
+            text-shadow:
+                0 0 8px rgba(255,255,255,.25),
+                0 0 18px rgba(255,60,10,.35);
+        }
+
+        .brand h1 span {
+            color: #ff4b18;
+        }
+
+        .brand p {
+            margin-top: 8px;
+
+            color: #858991;
+
+            font-size: 10px;
+
+            letter-spacing: 2.4px;
+
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           REGISTER CARD
+        ========================== */
+
+        .card {
+            width: 100%;
+
+            padding: 32px;
+
+            position: relative;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(30,32,37,.98),
+                    rgba(7,8,11,.98)
+                );
+
+            border: 1px solid rgba(255,70,25,.38);
+
+            box-shadow:
+                0 0 25px rgba(255,50,10,.12),
+                0 25px 70px rgba(0,0,0,.75);
+        }
+
+        /* =========================
+           CARD CORNERS
+        ========================== */
+
+        .corner {
+            position: absolute;
+
+            width: 38px;
+            height: 38px;
+
+            border-color: #ff501d;
+
+            pointer-events: none;
+        }
+
+        .top-left {
+            top: -1px;
+            left: -1px;
+
+            border-top: 2px solid;
+            border-left: 2px solid;
+
+            border-radius: 18px 0 0 0;
+        }
+
+        .top-right {
+            top: -1px;
+            right: -1px;
+
+            border-top: 2px solid;
+            border-right: 2px solid;
+
+            border-radius: 0 18px 0 0;
+        }
+
+        .bottom-left {
+            bottom: -1px;
+            left: -1px;
+
+            border-bottom: 2px solid;
+            border-left: 2px solid;
+
+            border-radius: 0 0 0 18px;
+        }
+
+        .bottom-right {
+            bottom: -1px;
+            right: -1px;
+
+            border-bottom: 2px solid;
+            border-right: 2px solid;
+
+            border-radius: 0 0 18px 0;
+        }
+
+        /* =========================
+           SYSTEM STATUS
+        ========================== */
+
+        .system-status {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 22px;
+
+            color: #686d76;
+
+            font-size: 9px;
+
+            letter-spacing: 1.3px;
+        }
+
+        .status-online {
+            color: #ff642d;
+            white-space: nowrap;
+        }
+
+        .status-online::before {
+            content: "";
+
+            display: inline-block;
+
+            width: 7px;
+            height: 7px;
+
+            margin-right: 6px;
+
+            border-radius: 50%;
+
+            background: #ff642d;
+
+            box-shadow:
+                0 0 8px #ff642d;
+        }
+
+        /* =========================
+           TITLE
+        ========================== */
+
+        h2 {
+            text-align: center;
+
+            margin-bottom: 24px;
+
+            font-size: 19px;
+
+            letter-spacing: 2px;
+
+            color: #f2f2f2;
+        }
+
+        h2 span {
+            color: #ff5724;
+        }
+
+        /* =========================
+           INPUT GROUP
+        ========================== */
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #858a93;
+
+            font-size: 10px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        input {
+            display: block;
+
+            width: 100%;
+            height: 46px;
+
+            padding: 0 14px;
+
+            border: 1px solid #373b42;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: rgba(0,0,0,.48);
+
+            color: #ffffff;
+
+            font-size: 14px;
+
+            transition:
+                border-color .25s ease,
+                box-shadow .25s ease,
+                background .25s ease;
+        }
+
+        input::placeholder {
+            color: #555b64;
+        }
+
+        input:focus {
+            border-color: #ff5724;
+
+            background: rgba(0,0,0,.65);
+
+            box-shadow:
+                0 0 0 2px rgba(255,87,36,.08),
+                0 0 18px rgba(255,70,20,.18);
+        }
+
+        /* =========================
+           REGISTER BUTTON
+        ========================== */
+
+        button {
+            display: block;
+
+            width: 100%;
+            height: 50px;
+
+            margin-top: 8px;
+
+            border: 1px solid #ff713f;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #8f1b08,
+                    #e84112,
+                    #8f1b08
+                );
+
+            box-shadow:
+                0 0 15px rgba(255,60,10,.2);
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                filter .2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+
+            filter: brightness(1.12);
+
+            box-shadow:
+                0 0 18px rgba(255,70,20,.55),
+                0 0 35px rgba(255,60,10,.18);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* =========================
+           LOGIN LINK
+        ========================== */
+
+        .login-link {
+            margin-top: 18px;
+
+            text-align: center;
+
+            color: #686d76;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+        .login-link a {
+            color: #ff5a25;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: .2s;
+        }
+
+        .login-link a:hover {
+            color: #ff916b;
+
+            text-shadow:
+                0 0 10px rgba(255,70,20,.6);
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        .footer {
+            margin-top: 17px;
+
+            text-align: center;
+
+            color: #51565e;
+
+            font-size: 8px;
+
+            letter-spacing: 1.2px;
+
+            line-height: 1.6;
+        }
+
+        .footer span {
+            color: #ff5421;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 600px) {
+
+            body {
+                align-items: flex-start;
+
+                padding-top: 25px;
+                padding-bottom: 30px;
+            }
+
+            .register-wrapper {
+                max-width: 410px;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+                letter-spacing: 2px;
+            }
+
+            .brand p {
+                font-size: 8px;
+                letter-spacing: 1.6px;
+            }
+
+            .card {
+                padding: 28px 22px;
+            }
+
+            .system-status {
+                font-size: 8px;
+            }
+        }
+
+        /* =========================
+           SMALL HEIGHT FIX
+        ========================== */
+
+        @media (max-height: 650px) {
+
+            body {
+                align-items: flex-start;
+
+                padding-top: 18px;
+                padding-bottom: 30px;
+            }
+
+            .reactor {
+                width: 60px;
+                height: 60px;
+
+                margin-bottom: 10px;
+            }
+
+            .reactor::before {
+                width: 45px;
+                height: 45px;
+            }
+
+            .reactor-core {
+                width: 23px;
+                height: 23px;
+            }
+
+            .brand {
+                margin-bottom: 14px;
+            }
+
+            .card {
+                padding-top: 24px;
+                padding-bottom: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="grid"></div>
+
+    <div class="glow"></div>
+
+    <main class="register-wrapper">
+
+        <!-- ARC REACTOR -->
+
+        <div class="reactor">
+            <div class="reactor-core"></div>
+        </div>
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <h1>
+                SMART <span>AI</span> ATTENDANCE
+            </h1>
+
+            <p>
+                Intelligent Attendance Management System
+            </p>
+
+        </div>
+
+        <!-- REGISTER CARD -->
+
+        <section class="card">
+
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+
+            <div class="system-status">
+
+                <span>
+                    TEACHER REGISTRATION SYSTEM
+                </span>
+
+                <span class="status-online">
+                    SYSTEM ONLINE
+                </span>
+
+            </div>
+
+            <h2>
+                CREATE <span>TEACHER ACCOUNT</span>
+            </h2>
+
+            <!-- BACKEND ROUTE UNCHANGED -->
+
+            <form
+                action="/teacher/register"
+                method="POST"
+            >
+
+                <div class="input-group">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="full_name"
+                        placeholder="Enter Full Name"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Teacher ID
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Create Teacher ID"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Security Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Create Password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        placeholder="Confirm Password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+                <button type="submit">
+                    INITIALIZE ACCOUNT
+                </button>
+
+            </form>
+
+            <div class="login-link">
+
+                Already registered?
+
+                <a href="/teacher/login">
+                    Teacher Login
+                </a>
+
+            </div>
+
+            <div class="footer">
+
+                SMART AI ATTENDANCE
+
+                <span>•</span>
+
+                SECURE TEACHER REGISTRATION PORTAL
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
