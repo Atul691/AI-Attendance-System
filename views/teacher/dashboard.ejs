@@ -5450,22 +5450,110 @@ if (
 
     }
 
+/* =====================================================
+   REAL WORLD AI + NEWS SEARCH
+===================================================== */
 
-    /* =====================================================
-       UNKNOWN COMMAND
-    ===================================================== */
+updateJarvis(
+    "JARVIS THINKING",
+    "Searching for: " + originalCommand
+);
+
+speak(
+    "Ek moment Sir, main iske baare mein information check kar raha hoon."
+);
+
+
+/* =====================================================
+   SEND REAL WORLD QUESTION TO SERVER
+===================================================== */
+
+fetch("/teacher/jarvis/command", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+        command: originalCommand
+    })
+
+})
+
+.then(function (response) {
+
+    if (!response.ok) {
+
+        throw new Error(
+            "JARVIS server response failed"
+        );
+
+    }
+
+    return response.json();
+
+})
+
+.then(function (data) {
+
+    console.log(
+        "JARVIS SERVER RESPONSE:",
+        data
+    );
+
+
+    if (data && data.response) {
+
+        updateJarvis(
+            "JARVIS RESPONSE",
+            data.response
+        );
+
+        speak(
+            data.response
+        );
+
+        return;
+
+    }
+
 
     updateJarvis(
-        "COMMAND NOT UNDERSTOOD",
-        "I could not understand: " +
-        originalCommand
+        "JARVIS RESPONSE",
+        "Sir, mujhe is question ka answer nahi mila."
     );
 
 
     speak(
-        "Sorry, mujhe samajh nahi aaya. Dobara normal language mein bolo."
+        "Sir, mujhe is question ka reliable answer nahi mila."
     );
 
+})
+
+.catch(function (error) {
+
+    console.error(
+        "JARVIS REAL WORLD SEARCH ERROR:",
+        error
+    );
+
+
+    updateJarvis(
+        "JARVIS CONNECTION ERROR",
+        "Unable to connect to JARVIS AI server."
+    );
+
+
+    speak(
+        "Sorry Sir, main abhi internet information service se connect nahi kar pa raha hoon."
+    );
+
+});
+
+
+return;
 }
 
 
