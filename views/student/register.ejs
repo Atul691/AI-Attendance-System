@@ -1107,6 +1107,8 @@ let submittingForm = false;
 
 let currentPreviewURL = null;
 
+let stablePhotoFile = null;
+
 
 /* =====================================================
    CONSTANTS
@@ -1117,6 +1119,74 @@ const MODEL_PATH = "/models";
 const MAX_IMAGE_SIZE =
     10 * 1024 * 1024;
 
+    /* =====================================================
+   CREATE STABLE MOBILE PHOTO
+===================================================== */
+
+async function createStablePhoto(file) {
+
+    const img = await faceapi.bufferToImage(file);
+
+    const canvas = document.createElement("canvas");
+
+    const MAX_WIDTH = 1600;
+    const MAX_HEIGHT = 1600;
+
+    let width = img.width;
+    let height = img.height;
+
+    if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+
+        const ratio = Math.min(
+            MAX_WIDTH / width,
+            MAX_HEIGHT / height
+        );
+
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+        img,
+        0,
+        0,
+        width,
+        height
+    );
+
+    const blob = await new Promise(
+        resolve => {
+
+            canvas.toBlob(
+                resolve,
+                "image/jpeg",
+                0.92
+            );
+
+        }
+    );
+
+    if (!blob) {
+
+        throw new Error(
+            "Could not create stable image."
+        );
+
+    }
+
+    return new File(
+        [blob],
+        "student-face.jpg",
+        {
+            type: "image/jpeg"
+        }
+    );
+}
 
 /* =====================================================
    STATUS
@@ -1385,6 +1455,63 @@ photo.addEventListener(
 
         }
 
+        /* =================================================
+   CREATE STABLE PHOTO FOR MOBILE
+================================================= */
+
+try {
+
+    setStatus(
+        "📸 Securing photo for mobile upload..."
+    );
+
+    stablePhotoFile =
+        await createStablePhoto(file);
+
+
+    /* Replace mobile temporary file */
+
+    const dataTransfer =
+        new DataTransfer();
+
+    dataTransfer.items.add(
+        stablePhotoFile
+    );
+
+    photo.files =
+        dataTransfer.files;
+
+
+    console.log(
+        "✅ Stable mobile photo created:",
+        stablePhotoFile.name
+    );
+
+}
+catch (error) {
+
+    console.error(
+        "❌ STABLE PHOTO ERROR:",
+        error
+    );
+
+    stablePhotoFile = null;
+
+    photo.value = "";
+
+    processingFace = false;
+
+    scanner.classList.remove(
+        "active"
+    );
+
+    setStatus(
+        "❌ Could not prepare photo. Please try again."
+    );
+
+    return;
+
+}
 
         /* =================================================
            FILE SIZE
@@ -1421,7 +1548,9 @@ photo.addEventListener(
 
 
         currentPreviewURL =
-            URL.createObjectURL(file);
+    URL.createObjectURL(
+        stablePhotoFile
+    );
 
 
         preview.src =
@@ -1448,10 +1577,11 @@ photo.addEventListener(
             ============================================= */
 
             const img =
-                await faceapi.bufferToImage(file);
+    await faceapi.bufferToImage(
+        stablePhotoFile
+    );
 
-
-            progressBar.style.width =
+const photoFile =         progressBar.style.width =
                 "40%";
 
 
@@ -1709,8 +1839,11 @@ registerForm.addEventListener(
             passwordInput.value;
 
         const photoFile =
-            photo.files &&
-            photo.files[0];
+    stablePhotoFile ||
+    (
+        photo.files &&
+        photo.files[0]
+    );
 
 
         /* =================================================
