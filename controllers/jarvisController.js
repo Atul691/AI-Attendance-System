@@ -28,6 +28,561 @@ exports.processCommand = async (req, res) => {
 
         const text = command.toLowerCase().trim();
 
+                /* =====================================================
+           JARVIS RECENT CONVERSATION CONTEXT
+        ===================================================== */
+
+        const recentConversationResult = await db.query(
+
+            `SELECT
+                user_command,
+                jarvis_response
+             FROM jarvis_conversation
+             ORDER BY id DESC
+             LIMIT 5`
+
+        );
+
+
+        const recentConversation =
+            recentConversationResult.rows.reverse();
+
+                /* =====================================================
+           JARVIS PERSONAL MEMORY
+        ===================================================== */
+
+        // याद रखने के commands
+       if (
+
+    text.startsWith("remember that ") ||
+    text.startsWith("remember ") ||
+
+    /* Hindi / Hinglish memory commands */
+
+    text.startsWith("yaad rakho") ||
+    text.startsWith("yad rakho") ||
+
+    text.startsWith("yaad karo") ||
+    text.startsWith("yad karo") ||
+
+    text.includes("yaad rakhna") ||
+    text.includes("yad rakhna") ||
+
+    text.includes("याद रखो") ||
+    text.includes("याद रखना")
+
+) {
+
+    let memoryValue = command
+    .replace(/^remember that\s+/i, "")
+    .replace(/^remember\s+/i, "")
+
+    .replace(/^yaad rakho\s*/i, "")
+    .replace(/^yad rakho\s*/i, "")
+
+    .replace(/^yaad karo\s*/i, "")
+    .replace(/^yad karo\s*/i, "")
+
+    .replace(/^yaad rakhna\s*/i, "")
+    .replace(/^yad rakhna\s*/i, "")
+
+    .replace(/^याद रखो\s*/i, "")
+    .replace(/^याद रखना\s*/i, "")
+
+    .trim();
+
+        memoryValue = memoryValue
+    .replace(/\bmeri girlfriend\b/gi, "aapki girlfriend")
+    .replace(/\bmera boyfriend\b/gi, "aapka boyfriend")
+    .replace(/\bmeri dost\b/gi, "aapki dost")
+    .replace(/\bmera dost\b/gi, "aapka dost")
+    .replace(/\bmeri friend\b/gi, "aapki friend")
+    .replace(/\bmera friend\b/gi, "aapka friend")
+    .replace(/\bmeri\b/gi, "aapki")
+    .replace(/\bmera\b/gi, "aapka")
+    .replace(/\bmere\b/gi, "aapke");
+
+    if (!memoryValue) {
+
+        return res.json({
+
+            success: true,
+
+            response:
+                "Sir, aap mujhe bataiye ki kya yaad rakhna hai."
+
+        });
+
+    }
+
+
+    await db.query(
+
+        `INSERT INTO jarvis_memory
+        (memory_key, memory_value, updated_at)
+
+        VALUES ($1, $2, CURRENT_TIMESTAMP)
+
+        ON CONFLICT (memory_key)
+
+        DO UPDATE SET
+
+            memory_value = EXCLUDED.memory_value,
+
+            updated_at = CURRENT_TIMESTAMP`,
+
+        [
+            memoryValue.toLowerCase(),
+            memoryValue
+        ]
+
+    );
+
+
+    return res.json({
+
+        success: true,
+
+        response:
+            `Theek hai Sir, maine yaad rakh liya: ${memoryValue}`
+
+    });
+
+}
+        /* =====================================================
+   PERSONAL MEMORY QUESTION
+===================================================== */
+
+if (
+
+    text.includes("kya yad hai") ||
+    text.includes("kya yaad hai") ||
+    text.includes("क्या याद है") ||
+    text.includes("bare mein kya yad hai") ||
+    text.includes("bare mein kya yaad hai") ||
+    text.includes("के बारे में क्या याद है")
+
+) {
+
+    let personName = command
+
+        .replace(/ke bare mein kya yad hai/gi, "")
+        .replace(/ke bare mein kya yaad hai/gi, "")
+        .replace(/के बारे में क्या याद है/g, "")
+
+        .replace(/kya yad hai/gi, "")
+        .replace(/kya yaad hai/gi, "")
+        .replace(/क्या याद है/g, "")
+
+        .trim();
+
+
+    if (!personName) {
+
+        return res.json({
+
+            success: true,
+
+            response:
+                "Sir, aap kis person ya information ke baare mein pooch rahe hain?"
+
+        });
+
+    }
+
+
+    const memoryResult = await db.query(
+
+        `SELECT memory_value
+         FROM jarvis_memory
+         WHERE memory_value ILIKE $1
+         ORDER BY updated_at DESC
+         LIMIT 5`,
+
+        [`%${personName}%`]
+
+    );
+
+
+    if (memoryResult.rows.length === 0) {
+
+        return res.json({
+
+            success: true,
+
+            response:
+                `Sir, mujhe ${personName} ke baare mein abhi koi personal memory saved nahi hai.`
+
+        });
+
+    }
+
+
+    const memories = memoryResult.rows
+
+        .map(item => item.memory_value)
+
+        .join(". ");
+
+
+    return res.json({
+
+        success: true,
+
+        response:
+            `Sir, mujhe yaad hai: ${memories}`
+
+    });
+
+}
+
+        /* =====================================================
+           SPECIAL PERSONAL MEMORY - PRACHI BABY
+        ===================================================== */
+
+        if (
+
+            text.includes("prachi baby") ||
+            text.includes("prachi") ||
+            text.includes("प्राची")
+
+        ) {
+
+            const memoryResult = await db.query(
+
+                `SELECT memory_value
+                 FROM jarvis_memory
+                 WHERE memory_value ILIKE '%prachi%'
+                 ORDER BY updated_at DESC
+                 LIMIT 1`
+
+            );
+
+
+            if (memoryResult.rows.length > 0) {
+
+                return res.json({
+
+                    success: true,
+
+                    response:
+                        `Sir, mujhe yaad hai. ${memoryResult.rows[0].memory_value}. Waise Prachi Baby kaisi hain aaj?`
+
+                });
+
+            }
+
+
+            return res.json({
+
+                success: true,
+
+                response:
+                    "Sir, Prachi Baby ke baare mein mujhe abhi koi information yaad nahi hai. Aap mujhe unke baare mein kuch yaad rakhwa sakte hain."
+
+            });
+
+        }
+
+
+        /* =====================================================
+           WHAT DO YOU REMEMBER
+        ===================================================== */
+
+        if (
+
+            text.includes("what do you remember") ||
+            text.includes("tum kya yaad rakhte ho") ||
+            text.includes("kya yaad hai") ||
+            text.includes("क्या याद है")
+
+        ) {
+
+            const memories = await db.query(
+
+                `SELECT memory_value
+                 FROM jarvis_memory
+                 ORDER BY updated_at DESC
+                 LIMIT 10`
+
+            );
+
+
+            if (memories.rows.length === 0) {
+
+                return res.json({
+
+                    success: true,
+
+                    response:
+                        "Sir, abhi mere paas koi personal memory saved nahi hai."
+
+                });
+
+            }
+
+
+            const memoryList = memories.rows
+
+                .map(
+                    (item, index) =>
+                        `${index + 1}. ${item.memory_value}`
+                )
+
+                .join(". ");
+
+
+            return res.json({
+
+                success: true,
+
+                response:
+                    `Sir, mujhe ye baatein yaad hain: ${memoryList}`
+
+            });
+
+        }
+
+
+        /* =====================================================
+           DELETE MEMORY
+        ===================================================== */
+
+        if (
+
+            text.startsWith("forget ") ||
+            text.includes("bhool jao") ||
+            text.includes("भूल जाओ")
+
+        ) {
+
+            let memoryToDelete = command
+
+                .replace(/^forget\s+/i, "")
+                .replace(/bhool jao/i, "")
+                .replace(/भूल जाओ/g, "")
+                .trim();
+
+
+            if (!memoryToDelete) {
+
+                return res.json({
+
+                    success: true,
+
+                    response:
+                        "Sir, aap mujhe bataiye ki kaunsi memory bhoolni hai."
+
+                });
+
+            }
+
+
+            const deleteResult = await db.query(
+
+                `DELETE FROM jarvis_memory
+                 WHERE memory_value ILIKE $1
+                 RETURNING *`,
+
+                [`%${memoryToDelete}%`]
+
+            );
+
+
+            if (deleteResult.rows.length === 0) {
+
+                return res.json({
+
+                    success: true,
+
+                    response:
+                        "Sir, mujhe is information ki koi saved memory nahi mili."
+
+                });
+
+            }
+
+
+            return res.json({
+
+                success: true,
+
+                response:
+                    "Theek hai Sir, maine woh information bhool di hai."
+
+            });
+
+        }
+
+/* =====================================================
+   SMART MEMORY QUESTION SEARCH
+===================================================== */
+
+const memoryQuestionPatterns = [
+
+    "yad hai",
+    "yaad hai",
+    "kya yad hai",
+    "kya yaad hai",
+
+    "tumhe yad hai",
+    "tumhe yaad hai",
+
+    "tumko yad hai",
+    "tumko yaad hai",
+
+    "remember",
+
+    "what do you remember",
+
+    "kon hai",
+    "kaun hai",
+    "koun hai",
+
+    "who is",
+
+    "tum jante ho",
+    "tum jaante ho",
+
+    "tumhe pata hai",
+
+    "mere bare mein",
+    "mere baare mein",
+
+    "maine kya bataya tha",
+    "maine kya bola tha"
+
+];
+
+
+const isMemoryQuestion =
+    memoryQuestionPatterns.some(pattern =>
+        text.includes(pattern)
+    );
+
+
+if (isMemoryQuestion) {
+
+    console.log(
+        "JARVIS SEARCHING PERSONAL MEMORY:",
+        command
+    );
+
+
+    /*
+       IMPORTANT:
+       पहले पूरी memory database में search होगी
+    */
+
+    const memoryResult = await db.query(
+
+        `SELECT memory_value
+         FROM jarvis_memory
+         ORDER BY updated_at DESC`
+
+    );
+
+
+    if (memoryResult.rows.length === 0) {
+
+        return res.json({
+
+            success: true,
+
+            response:
+                "Sir, mujhe iske baare mein abhi koi personal memory yaad nahi hai."
+
+        });
+
+    }
+
+
+    /*
+       Command से unnecessary words हटाओ
+    */
+
+    const searchWords = text
+
+        .replace(/kya yad hai/g, "")
+        .replace(/kya yaad hai/g, "")
+
+        .replace(/yad hai/g, "")
+        .replace(/yaad hai/g, "")
+
+        .replace(/tumhe yad hai/g, "")
+        .replace(/tumhe yaad hai/g, "")
+
+        .replace(/tumko yad hai/g, "")
+        .replace(/tumko yaad hai/g, "")
+
+        .replace(/ke bare mein/g, "")
+        .replace(/ke baare mein/g, "")
+
+        .replace(/who is/g, "")
+        .replace(/kon hai/g, "")
+        .replace(/kaun hai/g, "")
+
+        .replace(/\?/g, "")
+
+        .trim();
+
+
+    /*
+       सभी memories में search
+    */
+
+    const matchedMemory =
+        memoryResult.rows.find(item =>
+
+            item.memory_value
+                .toLowerCase()
+                .includes(searchWords)
+
+            ||
+
+            searchWords
+                .split(" ")
+                .filter(word => word.length > 2)
+                .some(word =>
+
+                    item.memory_value
+                        .toLowerCase()
+                        .includes(word)
+
+                )
+
+        );
+
+
+    if (matchedMemory) {
+
+        return res.json({
+
+            success: true,
+
+            response:
+                `Sir, mujhe yaad hai: ${matchedMemory.memory_value}`
+
+        });
+
+    }
+
+
+    /*
+       Memory नहीं मिली
+       IMPORTANT: Tavily search पर नहीं जाएगा
+    */
+
+    return res.json({
+
+        success: true,
+
+        response:
+            "Sir, mujhe iske baare mein koi personal information yaad nahi hai. Agar aap chahen to aap mujhe iske baare mein yaad rakhne ke liye bata sakte hain."
+
+    });
+
+}
 
         /* =====================================================
            GREETING COMMANDS
@@ -49,7 +604,11 @@ exports.processCommand = async (req, res) => {
                 success: true,
 
                 response:
-                    "Hello Sir! Welcome back. Main JARVIS hoon. Aap kaise hain? Sab theek hai?"
+    recentConversation.length > 0
+
+        ? "Hello Sir. Aap wapas aa gaye. Pichli baar humari baat chal rahi thi, toh bataiye Sir, ab aapko kis cheez mein meri help chahiye?"
+
+        : "Hello Sir. Good to have you back. Main online hoon. Aaj aap kaise hain?"
 
             });
 
@@ -73,7 +632,7 @@ exports.processCommand = async (req, res) => {
                 success: true,
 
                 response:
-                    "Main bilkul theek hoon Sir. Main hamesha aapki help ke liye ready hoon. Aap bataiye, sab theek hai?"
+    "Main bilkul operational hoon Sir. Lekin zyada important baat ye hai ki aap kaise hain? Aaj ka din kaisa ja raha hai?"
 
             });
 
@@ -437,6 +996,74 @@ exports.processCommand = async (req, res) => {
 
         }
 
+                   /* =====================================================
+           SPECIFIC PERSONAL MEMORY SEARCH
+        ===================================================== */
+
+        if (
+
+            text.includes("ke bare mein kya yad hai") ||
+            text.includes("ke bare mein kya yaad hai") ||
+            text.includes("के बारे में क्या याद है")
+
+        ) {
+
+            let personName = command
+
+                .replace(/ke bare mein kya yad hai/gi, "")
+                .replace(/ke bare mein kya yaad hai/gi, "")
+                .replace(/के बारे में क्या याद है/g, "")
+
+                .trim();
+
+
+            const memoryResult = await db.query(
+
+                `SELECT memory_value
+                 FROM jarvis_memory
+                 WHERE memory_value ILIKE $1
+                 ORDER BY updated_at DESC
+                 LIMIT 5`,
+
+                [`%${personName}%`]
+
+            );
+
+
+            if (memoryResult.rows.length > 0) {
+
+                const memories = memoryResult.rows
+
+                    .map(item => item.memory_value)
+
+                    .join(". ");
+
+
+                return res.json({
+
+                    success: true,
+
+                    response:
+                        `Sir, mujhe ${personName} ke baare mein ye yaad hai: ${memories}`
+
+                });
+
+            }
+
+
+            return res.json({
+
+                success: true,
+
+                response:
+                    `Sir, mujhe ${personName} ke baare mein abhi koi personal memory yaad nahi hai.`
+
+            });
+
+        }
+
+
+
         /* =====================================================
    TAVILY REAL-TIME INTERNET SEARCH
 ===================================================== */
@@ -465,40 +1092,75 @@ try {
 
     if (answer) {
 
-        return res.json({
+    await db.query(
 
-            success: true,
+        `INSERT INTO jarvis_conversation
+        (user_command, jarvis_response)
 
-            response:
-                answer
+        VALUES ($1, $2)`,
 
-        });
+        [
+            command,
+            answer
+        ]
 
-    }
+    );
+
+
+    return res.json({
+
+        success: true,
+
+        response:
+            answer
+
+    });
+
+}
 
 
     const results =
         tavilyResponse.data.results;
 
+if (
 
-    if (
-        results &&
-        results.length > 0
-    ) {
+    results &&
+    results.length > 0
 
-        return res.json({
+) {
 
-            success: true,
+    const searchResponse =
 
-            response:
-                results[0].content ||
-                results[0].title ||
-                "Sir, mujhe internet par information mil gayi hai."
+        results[0].content ||
+        results[0].title ||
+        "Sir, mujhe internet par information mil gayi hai.";
 
-        });
 
-    }
+    await db.query(
 
+        `INSERT INTO jarvis_conversation
+        (user_command, jarvis_response)
+
+        VALUES ($1, $2)`,
+
+        [
+            command,
+            searchResponse
+        ]
+
+    );
+
+
+    return res.json({
+
+        success: true,
+
+        response:
+            searchResponse
+
+    });
+
+}
 
     return res.json({
 

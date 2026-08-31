@@ -2861,6 +2861,31 @@ function speak(text, language = "hi-IN") {
 
     isSpeaking = true;
 
+    /* =====================================================
+   STOP MICROPHONE WHILE JARVIS IS SPEAKING
+===================================================== */
+
+if (recognition) {
+
+    try {
+
+        recognition.stop();
+
+        console.log(
+            "JARVIS MICROPHONE STOPPED WHILE SPEAKING"
+        );
+
+    } catch (error) {
+
+        console.log(
+            "MIC STOP ERROR:",
+            error
+        );
+
+    }
+
+}
+
     updateJarvis(
         "JARVIS SPEAKING",
         text
@@ -2924,24 +2949,33 @@ function speak(text, language = "hi-IN") {
         }
 
     };
+speech.onerror = function (event) { 
 
-    speech.onerror = function (event) {
+    console.log( 
+        "Speech Error:", 
+        event 
+    ); 
+
+    isSpeaking = false; 
+
+    /* interrupted error normal hai */
+    if (event.error === "interrupted") {
 
         console.log(
-            "Speech Error:",
-            event
+            "JARVIS speech was interrupted."
         );
 
-        isSpeaking = false;
+        return;
 
-        if (jarvisEnabled) {
+    }
 
-            restartListening(1000);
+    if (jarvisEnabled) { 
 
-        }
+        restartListening(1000); 
 
-    };
+    } 
 
+};
     setTimeout(() => {
 
         window.speechSynthesis.speak(speech);
@@ -3785,9 +3819,9 @@ async function sendCommandToJarvis(command) {
 
         if (!data.success) {
 
-            const errorMessage =
-                data.message ||
-                "JARVIS could not process this command.";
+            const errorMessage = 
+    data.response || 
+    "JARVIS command process nahi kar saka.";
 
 
             updateJarvis(
@@ -3802,16 +3836,14 @@ async function sendCommandToJarvis(command) {
 
         }
 
+updateJarvis( 
+    data.status || "JARVIS RESPONSE", 
+    data.response 
+); 
 
-        updateJarvis(
-            data.status || "JARVIS RESPONSE",
-            data.message
-        );
-
-
-        speak(
-            data.speak || data.message
-        );
+speak( 
+    data.response 
+);
 
 
         /*
@@ -3880,6 +3912,148 @@ function executeJarvisCommand(originalCommand) {
 
     const command =
         normalizeCommand(originalCommand);
+            /* =====================================================
+       PRIORITY PERSONAL MEMORY COMMAND
+    ===================================================== */
+
+    if (
+        command.startsWith("yad rakho") ||
+        command.startsWith("yaad rakho") ||
+        command.startsWith("remember")
+    ) {
+
+        console.log(
+            "JARVIS MEMORY COMMAND DETECTED:",
+            originalCommand
+        );
+
+        sendCommandToJarvis(originalCommand);
+
+        return;
+    }
+
+
+    /* =====================================================
+   SMART PERSONAL MEMORY QUESTION DETECTOR
+===================================================== */
+
+const memoryQuestionWords = [
+
+    /* याद / MEMORY */
+
+    "yad hai",
+    "yaad hai",
+
+    "kya yad hai",
+    "kya yaad hai",
+
+    "tumhe yad hai",
+    "tumhe yaad hai",
+
+    "tumko yad hai",
+    "tumko yaad hai",
+
+    "mujhe yad hai",
+    "mujhe yaad hai",
+
+    "remember",
+
+    "do you remember",
+
+    "what do you remember",
+
+    "tum kya yad rakhte ho",
+    "tum kya yaad rakhte ho",
+
+
+    /* किसी PERSON के बारे में */
+
+    "ke bare mein kya yad hai",
+    "ke bare mein kya yaad hai",
+
+    "ke bare mein yad hai",
+    "ke bare mein yaad hai",
+
+    "iske bare mein yad hai",
+    "iske bare mein yaad hai",
+
+    "uske bare mein yad hai",
+    "uske bare mein yaad hai",
+
+
+    /* तुम जानते हो */
+
+    "tum jante ho",
+    "tum jaante ho",
+
+    "tumhe pata hai",
+
+    "tumko pata hai",
+
+    "kya jante ho",
+    "kya jaante ho",
+
+    "tum kya jante ho",
+    "tum kya jaante ho",
+
+
+    /* कौन है */
+
+    "kon hai",
+    "kaun hai",
+    "koun hai",
+
+    "who is",
+
+
+    /* मेरे बारे में */
+
+    "mere bare mein kya pata hai",
+    "mere baare mein kya pata hai",
+
+    "mere bare mein kya yad hai",
+    "mere baare mein kya yaad hai",
+
+    "mere bare mein kya jante ho",
+    "mere baare mein kya jaante ho",
+
+
+    /* पहले बताई हुई बातें */
+
+    "maine kya bataya tha",
+
+    "maine kya bola tha",
+
+    "maine tumhe kya bataya",
+
+    "maine tumhe kya bola",
+
+    "tumhe kya pata hai"
+
+];
+
+
+const isMemoryQuestion =
+    memoryQuestionWords.some(word =>
+        command.includes(word)
+    );
+
+
+if (isMemoryQuestion) {
+
+    console.log(
+        "SMART MEMORY QUESTION DETECTED:",
+        originalCommand
+    );
+
+    sendCommandToJarvis(
+        originalCommand
+    );
+
+    return;
+
+}
+
         /* =====================================================
    PRIORITY STUDENT NAME SEARCH
 ===================================================== */
